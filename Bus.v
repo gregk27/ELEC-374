@@ -1,8 +1,8 @@
 module Bus (
 	//Mux
-	output [31:0]BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxInR5, BusMuxInR6, BusMuxInR7, BusMuxInR8, BusMuxInR9, BusMuxInR10, BusMuxInR11, BusMuxInR12, BusMuxInR13, BusMuxInR14, BusMuxInR15, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO,
+	input [31:0]BusMuxInTB, BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxInR5, BusMuxInR6, BusMuxInR7, BusMuxInR8, BusMuxInR9, BusMuxInR10, BusMuxInR11, BusMuxInR12, BusMuxInR13, BusMuxInR14, BusMuxInR15, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO,
 	//Encoder
-	output R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, R10out, R11out, R12out, R13out, R14out, R15out, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout,
+	input TBout, R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, R10out, R11out, R12out, R13out, R14out, R15out, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout,
 
 	output wire [31:0]BusMuxOut
 );
@@ -10,6 +10,7 @@ module Bus (
 reg [31:0]q;
 
 always @ (*) begin
+	if(TBout) q = BusMuxInTB;
 	if(R0out) q = BusMuxInR0;
 	if(R1out) q = BusMuxInR1;
 	if(R2out) q = BusMuxInR2;
