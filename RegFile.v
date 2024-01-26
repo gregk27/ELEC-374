@@ -1,5 +1,5 @@
 module RegFile(
-	input wire clk, clear,
+	input wire clock, clear,
 	input wire RF_en,
 	input wire [3:0]RF_select,
 	input wire [31:0]dataIn,
@@ -13,13 +13,13 @@ wire [15:0]enable = RF_en << RF_select;
 wire [31:0]regOuts[15:0];
 
 // Actual output is selected from above
-dataOut = regOuts[RF_select];
+assign dataOut = regOuts[RF_select];
 
 // Generate registers procedurally since it's a pain
 genvar i;
 generate
-	for(i = 0; i < 16; i++) begin
-		register R0(clear, clock, enable[i], dataIn, regOuts[i]);
+	for(i = 0; i < 16; i=i+1) begin : registers
+		register r(clear, clock, enable[i], dataIn, regOuts[i]);
 	end
 endgenerate
 
