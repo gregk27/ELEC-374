@@ -17,6 +17,8 @@ reg [32:0] divisor_pos;
 reg [32:0] divisor_neg;
 // Current step count
 reg [5:0] count;
+// Flag indicating if output needs to be negated
+reg needsComp;
 
 assign quotient = compute_quotient;
 assign remainder = compute_remain;
@@ -26,11 +28,17 @@ initial finished <= 0;
 always @(posedge clock, posedge start) begin
 	if(start) begin
 		compute_remain <= 33'd0;
-		compute_quotient <= dividend;
-		divisor_pos <= divisor;
-		divisor_pos[32] = divisor_pos[31];
-		divisor_neg <= -divisor;
-		divisor_neg[32] = divisor_neg[31];
+		// Ensure dividend is negative
+		compute_quotient <= dividend[31] ? -dividend : dividend;
+		// Divisor_pos should be absolute value of divisor, neg should be negative abs
+		divisor_pos <= divisor[31] ? -divisor : divisor;
+		divisor_neg <= divisor[31] ? divisor : -divisor;
+		// Sign-extend divisor, pos/neg should be enfocred so can just use 0/1
+		divisor_pos[32] <= 0;
+		divisor_neg[32] <= 1;
+		// If either one is negative, then output should be negative
+		needsComp = divisor[31] ^ dividend[31];
+		// Setup control flags
 		count <= 0;
 		finished <= 0;
 	end
@@ -52,6 +60,9 @@ always @(posedge clock, posedge start) begin
 	else if (count == 32) begin
 		if(compute_remain[32]) begin
 			compute_remain = compute_remain + divisor_pos;
+		end
+		if(needsComp) begin
+			compute_quotient = -compute_quotient;
 		end
 		finished <= 1;
 	end
