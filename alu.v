@@ -26,6 +26,13 @@ parameter
 	ROR 	= 5'b11011,
 	SHRA 	= 5'b11100,
 	SHLA 	= 5'b11101;
-
-
+	
+always @(A, B, opSelect) begin
+	finished <= 0;
+	case (opSelect)
+		NOT: out <= ~A; finished <= 1;
+		AND: out <= A&B; finished <= 1;
+		OR : out <= A|B; finished <= 1;
+	endcase
+end
 endmodule
