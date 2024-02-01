@@ -1,9 +1,9 @@
-module booth_multiplier(multiplicand, multiplier, product_lo, product_hi);
+module multiplier(multiplicand, multiplier, product_lo, product_hi);
 
 input [31:0] multiplicand, multiplier;
 output [31:0] product_lo, product_hi;
 
-reg acc, product_hi;
+reg[31: 0] acc, product_hi;
 reg[32:0] extended_multiplier;
 integer i;
 
@@ -33,7 +33,7 @@ always @(multiplicand or multiplier) begin
     end
     
 end
-assign product_lo = acc //Output the lower 32 bits
+assign product_lo = acc;//Output the lower 32 bits
 
 //the upper 32 bits remains in product_hi register outside of the module
 //the value can be accessed after the multiplication is complete
