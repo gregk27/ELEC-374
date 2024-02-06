@@ -1,45 +1,40 @@
-module multiplier(multiplicand, multiplier, product_lo, product_hi);
+module multiplier(
+	input wire clk,
+	input wire [31:0] multiplicand,
+	input wire [31:0] multiplier,
+	output reg [31:0] product_lo,
+	output reg [31:0] product_hi
+);
 
-input [31:0] multiplicand, multiplier;
-output [31:0] product_lo, product_hi;
-
-reg [63:0] product; // Use a single product register to simplify operations
-reg [31:0] product_hi, acc;
+// use a 64-bit reg for the product and an extra bit for booth recoding
+reg [64:0] product;
 reg [32:0] extended_multiplier;
 integer i;
 
-always @(multiplicand or multiplier) begin
-    acc = 32'd0;
-    product_hi = 32'd0;
-    extended_multiplier = {multiplier, 1'b0}; // Extend multiplier by 1 bit for bit-pair recoding
-
-    for(i = 0; i < 32; i = i + 1) begin
-        case (extended_multiplier[2:0])
-            3'b001, 3'b010: begin
-                product = product + {32'b0, multiplicand}; // +1
-            end
-            3'b011: begin
-                product = product + {31'b0, multiplicand, 1'b0}; // +2
-            end
-            3'b100: begin
-                product = product - {31'b0, multiplicand, 1'b0}; // -2
-            end
-            3'b101, 3'b110: begin
-                product = product - {32'b0, multiplicand}; // -1
-            end
-            
-            default: ; // Do nothing for 000, 111
-        endcase
-        // maintain sign
-        product = {product[63], product} >> 1;
-        extended_multiplier = extended_multiplier >> 1; // Align extended_multiplier for next iteration
-    end
-    
-    product_hi = product[63:32];
-    acc = product[31:0];
-end
-
-assign product_lo = acc; // Output the lower 32 bits
-assign product_hi = product_hi; // Output the upper 32 bits
-
-endmodule
+always @(posedge clk) begin
+	product <= 65 'd0; // intilize the product to 0
+	product[31:0] <= multiplicand; //place the multiplicand in loweer 32 bits
+	extended_multiplier <= {1'b0, multiplier, 1'b0}; //extened the multiplier 
+	
+	for (i = 0; i < 32; i = i + 2) begin //loop steps by 2 for bit pair recoding
+		//Determine action based on the two lsb
+		case (extended_multiplier[3:0])
+			4'b0001, 4'b0010: product[64:32] <= product[64:32] + multiplicand; //Add multiplicand 
+			4'b0100: product[64:32] <= product[64:32] + (multiplicand << 1); //Add 2*multiplicand 
+			4'b1011, 4'b1010: product[64:32] <= product[64:32] - multiplicand; //Sub multiplicand 
+			4'b1100: product[64:32] <= product[64:32] - (multiplicand << 1); //Sub 2*multiplicand
+			
+			//No action for 0000 or 1111
+			default: ;
+		endcase
+		
+		product <= {product[64], product[64], product[64:2]};
+		extended_multiplier <= {extended_multiplier[32], extended_multiplier[32], extended_multiplier[32:2]};
+	end 
+		
+		product_hi <= product[63:32];
+		product_lo <= product[31:0];
+		end 
+		
+endmodule 
+	
