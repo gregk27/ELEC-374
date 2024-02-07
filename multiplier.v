@@ -24,16 +24,16 @@ always @(posedge clock, posedge start) begin
 		count <= 0;
 		finished <= 0;
 	end else if(count != 32) begin
-			case (extended_multiplier[2:0])
+		case (extended_multiplier[2:0])
 			3'b001, 3'b010: product = product + ({32'b0, multiplicand} << count);
-            3'b011: product = product + ({32'b0, multiplicand} << (count + 1));
-            3'b100: product = product - ({32'b0, multiplicand} << (count + 1));
-            3'b101, 3'b110: product = product - ({32'b0, multiplicand} << count);
+            	3'b011: product = product + ({32'b0, multiplicand} << (count + 1));
+            	3'b100: product = product - ({32'b0, multiplicand} << (count + 1));
+            	3'b101, 3'b110: product = product - ({32'b0, multiplicand} << count);
 
-            default: ;
+            	default: ;
         endcase
-        extended_multiplier = extended_multiplier >> 2;
-        count = count + 2;
+        	extended_multiplier = extended_multiplier >> 2;
+        	count = count + 2;
 	end else if (count >= 32 && !finished) begin
 		finished <= 1;
 	end
