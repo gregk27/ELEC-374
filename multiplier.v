@@ -1,40 +1,54 @@
 module multiplier(
-	input wire clk,
-	input wire [31:0] multiplicand,
-	input wire [31:0] multiplier,
-	output reg [31:0] product_lo,
-	output reg [31:0] product_hi
+    input wire clk,
+    input wire start, 
+    input wire [31:0] multiplicand,
+    input wire [31:0] multiplier,
+    output wire [31:0] product_lo,
+    output wire [31:0] product_hi,
+    output reg finished
 );
 
-// use a 64-bit reg for the product and an extra bit for booth recoding
-reg [64:0] product;
+reg [63:0] product;
 reg [32:0] extended_multiplier;
-integer i;
+reg [5:0] count;
+
+
+
+initial begin
+    finished <= 0;
+end
 
 always @(posedge clk) begin
-	product <= 65 'd0; // intilize the product to 0
-	product[31:0] <= multiplicand; //place the multiplicand in loweer 32 bits
-	extended_multiplier <= {1'b0, multiplier, 1'b0}; //extened the multiplier 
-	
-	for (i = 0; i < 32; i = i + 2) begin //loop steps by 2 for bit pair recoding
-		//Determine action based on the two lsb
-		case (extended_multiplier[3:0])
-			4'b0001, 4'b0010: product[64:32] <= product[64:32] + multiplicand; //Add multiplicand 
-			4'b0100: product[64:32] <= product[64:32] + (multiplicand << 1); //Add 2*multiplicand 
-			4'b1011, 4'b1010: product[64:32] <= product[64:32] - multiplicand; //Sub multiplicand 
-			4'b1100: product[64:32] <= product[64:32] - (multiplicand << 1); //Sub 2*multiplicand
+    if(start) begin
+        //intilize the product and extended multiplier
+    product <= 64'd0; 
+	extended_multiplier <= {multiplier, 1'b0}; 
+    count <= 6'd0;
+    finished <= 0;
+
+    end
+    else if(count < 32) begin
+        case (extended_multiplier[2:0])
+			3'b001, 3'b010: product = product + ({32'b0, multiplicand} << count);
+            3'b011: product = product + ({32'b0, multiplicand} << (count + 1));
+            3'b100: product = product - ({32'b0, multiplicand} << (count + 1));
+            3'b101, 3'b110: product = product - ({32'b0, multiplicand} << count);
+
+            default: ;
+        endcase
+        extended_multiplier = extended_multiplier >> 2;
+        count = count + 2;
+    end
+    else begin
+        finished <= 1;
+    end
+end
+
+// Output assignments
+assign product_lo = product[31:0];
+assign product_hi = product[63:32];
+
+endmodule
+            
+
 			
-			//No action for 0000 or 1111
-			default: ;
-		endcase
-		
-		product <= {product[64], product[64], product[64:2]};
-		extended_multiplier <= {extended_multiplier[32], extended_multiplier[32], extended_multiplier[32:2]};
-	end 
-		
-		product_hi <= product[63:32];
-		product_lo <= product[31:0];
-		end 
-		
-endmodule 
-	
