@@ -2,45 +2,46 @@
 
 module multiplier_tb();
 
-reg clk;
-reg [3:0] present_state;
-reg [31:0] multiplicand, multiplier;
-wire [31:0] product_lo, product_hi;
+reg clock;
+reg start;
+reg [31:0] multiplicand;
+reg [31:0] multiplier;
+wire [31:0] product_low;
+wire [31:0] product_high;
+wire finished;
 
-//create the multiplier
+reg [63:0] expectedProduct;
 
-multiplier uut (
-	.clk(clk),
-	.multiplicand(multiplicand),
-	.multiplier(multiplier),
-	.product_lo(product_lo),
-	.product_hi(product_hi)
+multiplier mult(
+    .clk(clock),
+    .start(start),
+    .multiplicand(multiplicand),
+    .product_lo(product_low),
+    .product_hi(product_high),
+    .finished(finished)
 );
 
-initial begin 
-clk = 0;
-forever #5 clk = ~clk;
-end
+initial begin
+    clock = 0;
+    forever #5 clock = ~clock;
+    end
 
 initial begin
-
-	multiplicand <= 32'd0;
-	multiplier <= 32'd0;
-	
-	#10;
-	
-	multiplicand <= 32'd2;
-	multiplier <= 32'd4;
-	
-	#20;
-	
-	$display("Result %d%d", product_hi, product_lo);
-	
-	#10
-	$finish;
-	 
-	
-	
+    start = 0;
+    multiplicand = 0;
+    multiplier = 0;
+    #10;
+    // test 1
+    multiplicand = 32'd15;
+    multiplier = 32'd15;
+    expectedProduct = 64'd225;
+    #10;
+    start = 1;
+    #10;
+    start = 0;
+    wait(finished);
+    
+    $finish;
 end
 
-endmodule 
+endmodule
