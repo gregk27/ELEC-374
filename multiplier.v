@@ -40,8 +40,8 @@ always @(posedge clock, posedge start) begin
 	
 end
 
-assign product_lo <= product[31:0];
-assign product_hi <=product[63:32];
+assign product_lo = product[31:0];
+assign product_hi =product[63:32];
 
 
 endmodule
