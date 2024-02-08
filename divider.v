@@ -44,6 +44,7 @@ always @(posedge clock, posedge start) begin
 	end
 	// Stop when division is done after 32 iterations
 	else if(count != 32) begin
+			// These statements all need to be blocking for correct execution, so can't use <=
 			// Shift left
 			compute_remain = compute_remain << 1;
 			compute_remain[0] = compute_quotient[31];
@@ -55,14 +56,14 @@ always @(posedge clock, posedge start) begin
 			// Set q0 bit
 			compute_quotient[0] = ~compute_remain[32];
 			// Increment control counter
-			count = count + 1;
+			count <= count + 1;
 	end
 	else if (count == 32) begin
 		if(compute_remain[32]) begin
-			compute_remain = compute_remain + divisor_pos;
+			compute_remain <= compute_remain + divisor_pos;
 		end
 		if(needsComp) begin
-			compute_quotient = -compute_quotient;
+			compute_quotient <= -compute_quotient;
 		end
 		finished <= 1;
 	end
