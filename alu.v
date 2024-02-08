@@ -42,6 +42,11 @@ wire shift_rotation;
 reg [31:0] shift_out;
 shifter shift(A, B, right, rotate, shift_out);
 
+
+reg mul_start, mul_finished;
+wire [31:0] mul_lo, mul_hi;
+multiplier mul(clock, mul_start, A, B, mul_lo, mul_hi, mul_finished);
+
 wire div_start, div_finished;
 wire [31:0] quotient, remainder;
 module divider(clock, div_start, A, B, quotient, remainder, div_finished);
@@ -66,6 +71,7 @@ always @(negedge clock) begin
 				// Mux in a 0 if negate bit is high
 				negate_mux <= opSelect[1] ? 0 : A;
 			end
+			MUL: mul_start <= 1;
 			DIV: div_start <= 1;
 			SHL, SHR, ROL, ROR: begin
 				// Right flat in bit 0
@@ -82,6 +88,13 @@ always @(negedge clock) begin
 				// Adder runs in 1 cycle, so always ready
 				out <= adder_out;
 				finished <= 1;
+			end
+			MUL: begin
+				// Pull start flag low so mul can run
+				mul_start <= 0;
+				// Copy over current values
+				out <= {mul_hi, mul_lo};
+				finished <= mul_finished;
 			end
 			DIV: begin
 				// Pull start flag low so div can run
