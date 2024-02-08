@@ -19,13 +19,13 @@ parameter
 	NEG	= 5'b00111,
 	MUL	= 5'b01000,
 	DIV 	= 5'b01001,
-	//  Shifts are encoded as 1 1 Arith Rot Left
+	//  Shifts are encoded as 1 1 Arith Rot Right
 	SHL 	= 5'b11000,
 	SHR 	= 5'b11001,
 	ROL 	= 5'b11010,
 	ROR 	= 5'b11011,
-	SHRA 	= 5'b11100,
-	SHLA 	= 5'b11101;
+	SHLA 	= 5'b11100,
+	SHRA 	= 5'b11101;
 
 // Inernal status register used to indicate setup phase
 reg setup;
@@ -36,6 +36,11 @@ reg [31:0] adder_out;
 reg [31:0] negate_mux;
 adder add(negate_mux, B, subtract, adder_out);
 
+
+wire shift_right;
+wire shift_rotation;
+reg [31:0] shift_out;
+shifter shift(A, B, right, rotate, shift_out);
 	
 always @(A, B, opSelect) begin
 	finished <= 0;
@@ -57,6 +62,12 @@ always @(negedge clock) begin
 				// Mux in a 0 if negate bit is high
 				negate_mux <= opSelect[1] ? 0 : A;
 			end
+			SHL, SHR, ROL, ROR: begin
+				// Right flat in bit 0
+				right <= opSelect[0];
+				// Rotate flag in bit 1
+				rotate <= opSelect[1];
+			end
 		endcase
 	end
 	else begin
@@ -65,6 +76,11 @@ always @(negedge clock) begin
 			ADD, SUB, NEG: begin
 				// Adder runs in 1 cycle, so always ready
 				out <= adder_out;
+				finished <= 1;
+			end
+			SHL, SHR, ROL, ROR: begin
+				// Shifter runs in 1 cycle, so always ready
+				out <= shift_out;
 				finished <= 1;
 			end
 		endcase
