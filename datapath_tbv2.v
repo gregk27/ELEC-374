@@ -1,5 +1,5 @@
 `timescale 1ns/10ps
-module datapath_tb();
+module datapath_tbv2();
 reg clock, clear, tbIn;
 // Bus input selection lines (device output -> bus input)
 reg R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, R10out, R11out, R12out, R13out, R14out, R15out, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout;
@@ -49,7 +49,7 @@ always @(present_state) begin
 			#15 tbIn <= 0; R2in <= 0;
 		end
 		T1: begin
-            R2out <= 1  // feed R2 into Ry
+            R2out <= 1; // feed R2 into Ry
 			tbIn <= 0;
 			RYin <= 1;
 			#15 tbIn <= 0; RYin <= 0; R2out <= 0;

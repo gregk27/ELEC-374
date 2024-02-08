@@ -6,7 +6,11 @@ module DataPath(
 	input wire R0in, R1in, R2in, R3in, R4in, R5in, R6in, R7in, R8in, R9in, R10in, R11in, R12in, R13in, R14in, R15in, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin,
 	
 	input wire TBout,
-	input wire [31:0]BusMuxInTB
+	input wire [31:0]BusMuxInTB,
+	// alu requirments
+	input wire [5:0]opSelect,
+	input wire start,
+  	input wire finished
 );
 
 // Connections from device output to bus input
@@ -14,6 +18,8 @@ wire [31:0]BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxInR
 
 
 wire [31:0]BusMuxOut;
+
+wire [63:0] RZ_temp;
 
 
 //Devices
@@ -44,9 +50,13 @@ register IR(clear, clock, IRin, BusMuxOut, BusMuxInIR);
 // Memory
 register MAR(clear, clock, MARin, BusMuxOut, BusMuxInMAR);
 
+// connecting wire
+ 
+wire [63:0] ALU_Z; 
+
 // ALU
 register RY(clear, clock, RYin, BusMuxOut, BusMuxInRY);
-register RZ(clear, clock, RZin, BusMuxOut, BusMuxInRZ);
+register #(64, 64, 64'h0) RZ(clear, clock, RZin, ALU_Z, RZ_temp);
 register RHI(clear, clock, RHIin, BusMuxOut, BusMuxInRHI);
 register RLO(clear, clock, RLOin, BusMuxOut, BusMuxInRLO);
 
@@ -60,15 +70,13 @@ Bus bus(
 	// Out	
 	BusMuxOut);
 
-// connecting wires
-wire [31:0] RY_A; 
-wire [31:0] ALU_Z; 
+
 
 // instance of the alu
 ALU alu(
 	clock,
 	opSelect,
-	RY_A,	// A
+	BusMuxInRY,	// A
 	BusMuxOut,	//B
 	start,
 	ALU_Z,	//Z
