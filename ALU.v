@@ -37,8 +37,9 @@ adder add(adder_mux_A, adder_mux_B, subtract, adder_out);
 
 reg shift_right;
 reg shift_rotation;
+reg shift_arithmetic;
 wire [31:0] shift_out;
-shifter shift(A, B[7:0], shift_right, shift_rotation, shift_out);
+shifter shift(A, B[7:0], shift_right, shift_rotation, shift_arithmetic, shift_out);
 
 
 reg mul_start;
@@ -70,11 +71,13 @@ always @(negedge clock) begin
 			end
 			MUL: mul_start <= 1;
 			DIV: div_start <= 1;
-			SHL, SHR, ROL, ROR: begin
+			SHL, SHR, ROL, ROR, SHRA, SHLA: begin
 				// Right flat in bit 0
 				shift_right <= opSelect[0];
 				// Rotate flag in bit 1
 				shift_rotation <= opSelect[1];
+				// Arithmetic flag in bit 2
+				shift_arithmetic <= opSelect[2];
 			end
 		endcase
 	end
@@ -100,7 +103,7 @@ always @(negedge clock) begin
 				out <= quotient;
 				finished <= div_finished;
 			end
-			SHL, SHR, ROL, ROR: begin
+			SHL, SHR, ROL, ROR, SHRA, SHLA: begin
 				// Shifter runs in 1 cycle, so always ready
 				out <= shift_out;
 				finished <= 1;
