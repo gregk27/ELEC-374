@@ -60,4 +60,19 @@ Bus bus(
 	// Out	
 	BusMuxOut);
 
+// connecting wires
+wire [31:0] RY_A; 
+wire [31:0] ALU_Z; 
+
+// instance of the alu
+ALU alu(
+	clock,
+	opSelect,
+	RY_A,	// A
+	BusMuxOut,	//B
+	start,
+	ALU_Z,	//Z
+	finished
+);
+
 endmodule
