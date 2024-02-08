@@ -7,14 +7,19 @@ module DataPath(
 	
 	input wire TBout,
 	input wire [31:0]BusMuxInTB,
+	
 	// alu requirments
 	input wire [5:0]opSelect,
 	input wire start,
   	input wire finished
+	
+	// Memory Controls
+	input wire read, MDRin, MDRout,
+	input wire [31:0]Mdatain
 );
 
 // Connections from device output to bus input
-wire [31:0]BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxInR5, BusMuxInR6, BusMuxInR7, BusMuxInR8, BusMuxInR9, BusMuxInR10, BusMuxInR11, BusMuxInR12, BusMuxInR13, BusMuxInR14, BusMuxInR15, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO;
+wire [31:0]BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxInR5, BusMuxInR6, BusMuxInR7, BusMuxInR8, BusMuxInR9, BusMuxInR10, BusMuxInR11, BusMuxInR12, BusMuxInR13, BusMuxInR14, BusMuxInR15, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR;
 
 
 wire [31:0]BusMuxOut;
@@ -49,6 +54,9 @@ register IR(clear, clock, IRin, BusMuxOut, BusMuxInIR);
 
 // Memory
 register MAR(clear, clock, MARin, BusMuxOut, BusMuxInMAR);
+wire [31:0]MDMux = read ? BusMuxOut : Mdatain;
+register MDR(clear, clock, MDRin, MDMux, BusMuxInMDR);
+
 
 // connecting wire
  
@@ -64,9 +72,9 @@ register RLO(clear, clock, RLOin, BusMuxOut, BusMuxInRLO);
 //Bus
 Bus bus(
 	// Data In
-	BusMuxInTB, BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxInR5, BusMuxInR6, BusMuxInR7, BusMuxInR8, BusMuxInR9, BusMuxInR10, BusMuxInR11, BusMuxInR12, BusMuxInR13, BusMuxInR14, BusMuxInR15, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, 
+	BusMuxInTB, BusMuxInR0, BusMuxInR1, BusMuxInR2, BusMuxInR3, BusMuxInR4, BusMuxInR5, BusMuxInR6, BusMuxInR7, BusMuxInR8, BusMuxInR9, BusMuxInR10, BusMuxInR11, BusMuxInR12, BusMuxInR13, BusMuxInR14, BusMuxInR15, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR, 
 	// Select signals
-	TBout, R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, R10out, R11out, R12out, R13out, R14out, R15out, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout,
+	TBout, R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, R10out, R11out, R12out, R13out, R14out, R15out, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout, MDRout,
 	// Out	
 	BusMuxOut);
 

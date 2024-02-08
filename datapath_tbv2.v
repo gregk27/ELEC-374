@@ -12,6 +12,9 @@ reg[31:0] BusMuxInTB;
 reg [5:0]opSelect;
 reg start;
 wire finished;
+// Memory Controls
+reg read, MDRin, MDRout;
+reg [31:0]Mdatain;
 DataPath DP(
 	clock, clear,
 	R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, R10out, R11out, R12out, R13out, R14out, R15out, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout,
@@ -19,7 +22,8 @@ DataPath DP(
 	tbIn, BusMuxInTB,
 
     //alu signals
-    opSelect, start, finished
+    opSelect, start, finished,
+	read, MDRin, MDRout, Mdatain
 );
 
 
