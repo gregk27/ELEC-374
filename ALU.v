@@ -3,6 +3,7 @@ module ALU(
 	input wire [5:0] opSelect,
 	input wire [31:0] A,
 	input wire [31:0] B,
+	input wire start,
 	output reg [64:0] out,
 	output reg finished
 );
@@ -27,39 +28,34 @@ parameter
 	SHLA 	= 5'b11100,
 	SHRA 	= 5'b11101;
 
-// Inernal status register used to indicate setup phase
-reg setup;
-
-
+	
 reg subtract;
-reg [31:0] adder_out;
+wire [31:0] adder_out;
 reg [31:0] negate_mux;
 adder add(negate_mux, B, subtract, adder_out);
 
 
 reg shift_right;
 reg shift_rotation;
-reg [31:0] shift_out;
+wire [31:0] shift_out;
 shifter shift(A, B, shift_right, shift_rotation, shift_out);
 
 
-reg mul_start, mul_finished;
+reg mul_start;
+wire mul_finished;
 wire [31:0] mul_lo, mul_hi;
 multiplier mul(clock, mul_start, A, B, mul_lo, mul_hi, mul_finished);
 
-reg div_start, div_finished;
+reg div_start;
+wire div_finished;
 wire [31:0] quotient, remainder;
 divider div(clock, div_start, A, B, quotient, remainder, div_finished);
 
-always @(A, B, opSelect) begin
-	finished <= 0;
-	setup <= 1;
-end
-
 // Run on negedge clock to have values ready by the positive edge
 always @(negedge clock) begin
-	if(setup) begin
-		setup <= 0;
+	// If start is asserted, clear finished flag and begin setup this cycle
+	if(start) begin
+		finished = 0;
 		// First run setup to configure the inputs and outputs to perform the calculation
 		case (opSelect)
 			NOT:  begin out <= ~A; finished <= 1; end
@@ -109,13 +105,6 @@ always @(negedge clock) begin
 				finished <= 1;
 			end
 		endcase
-	end
-end
-
-// Update output and finished as the data becomes available
-always @(negedge clock) begin
-	if(!setup) begin
-
 	end
 end
 
