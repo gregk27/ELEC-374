@@ -37,19 +37,19 @@ reg [31:0] negate_mux;
 adder add(negate_mux, B, subtract, adder_out);
 
 
-wire shift_right;
-wire shift_rotation;
+reg shift_right;
+reg shift_rotation;
 reg [31:0] shift_out;
-shifter shift(A, B, right, rotate, shift_out);
+shifter shift(A, B, shift_right, shift_rotation, shift_out);
 
 
 reg mul_start, mul_finished;
 wire [31:0] mul_lo, mul_hi;
 multiplier mul(clock, mul_start, A, B, mul_lo, mul_hi, mul_finished);
 
-wire div_start, div_finished;
+reg div_start, div_finished;
 wire [31:0] quotient, remainder;
-module divider(clock, div_start, A, B, quotient, remainder, div_finished);
+divider div(clock, div_start, A, B, quotient, remainder, div_finished);
 
 always @(A, B, opSelect) begin
 	finished <= 0;
@@ -75,9 +75,9 @@ always @(negedge clock) begin
 			DIV: div_start <= 1;
 			SHL, SHR, ROL, ROR: begin
 				// Right flat in bit 0
-				right <= opSelect[0];
+				shift_right <= opSelect[0];
 				// Rotate flag in bit 1
-				rotate <= opSelect[1];
+				shift_rotation <= opSelect[1];
 			end
 		endcase
 	end
@@ -100,7 +100,7 @@ always @(negedge clock) begin
 				// Pull start flag low so div can run
 				div_start <= 0;
 				// Copy over current values
-				out <= div_out;
+				out <= quotient;
 				finished <= div_finished;
 			end
 			SHL, SHR, ROL, ROR: begin
