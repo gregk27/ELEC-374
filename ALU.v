@@ -4,7 +4,7 @@ module ALU(
 	input wire [31:0] A,
 	input wire [31:0] B,
 	input wire start,
-	output reg [64:0] out,
+	output reg [63:0] out,
 	output reg finished
 );
 
@@ -38,7 +38,7 @@ adder add(negate_mux, B, subtract, adder_out);
 reg shift_right;
 reg shift_rotation;
 wire [31:0] shift_out;
-shifter shift(A, B, shift_right, shift_rotation, shift_out);
+shifter shift(A, B[7:0], shift_right, shift_rotation, shift_out);
 
 
 reg mul_start;
