@@ -95,6 +95,48 @@ always @(present_state) begin
 			#1 start <= 1;
 			@(negedge clock) #1 start <= 0;
 		end
+		
+		T_ADD: begin
+			opSelect <= ADD;
+			A <= 15; B <= 25;
+			expectedOut <= 40;
+			// Assert start until negedge passed
+			#1 start <= 1;
+			@(negedge clock) #1 start <= 0;
+		end
+		T_SUB: begin
+			opSelect <= SUB;
+			A <= 15; B <= 25;
+			expectedOut <= -10;
+			// Assert start until negedge passed
+			#1 start <= 1;
+			@(negedge clock) #1 start <= 0;
+		end
+		T_NEG: begin
+			opSelect <= NEG;
+			A <= 15; B <= 25;
+			expectedOut <= -15;
+			// Assert start until negedge passed
+			#1 start <= 1;
+			@(negedge clock) #1 start <= 0;
+		end
+		T_MUL: begin
+			opSelect <= MUL;
+			A <= 24; B <= 8;
+			expectedOut <= 192;
+			// Assert start until negedge passed
+			#1 start <= 1;
+			@(negedge clock) #1 start <= 0;
+		end
+		T_DIV: begin
+			opSelect <= DIV;
+			A <= 24; B <= 8;
+			expectedOut <= 3;
+			// Assert start until negedge passed
+			#1 start <= 1;
+			@(negedge clock) #1 start <= 0;
+		end
+		
 	endcase
 end
 endmodule
