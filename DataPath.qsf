@@ -78,7 +78,6 @@ set_global_assignment -name TOP_LEVEL_ENTITY DataPath
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -entity DataPath -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -entity DataPath -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -entity DataPath -section_id Top
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity DataPath -section_id Top
 set_global_assignment -name EDA_TEST_BENCH_FILE ALU_tb.v -section_id ALU_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE datapath_tbv2.v -section_id datapath_tbv2
 set_global_assignment -name VERILOG_FILE RegFile_tb.v
@@ -99,3 +98,4 @@ set_global_assignment -name VERILOG_FILE ALU_tb.v
 set_global_assignment -name VERILOG_FILE ALU.v
 set_global_assignment -name VERILOG_FILE adder_tb.v
 set_global_assignment -name VERILOG_FILE adder.v
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity DataPath -section_id Top

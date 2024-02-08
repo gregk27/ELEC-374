@@ -13,7 +13,7 @@ module DataPath(
 	// alu requirments
 	input wire [5:0]opSelect,
 	input wire start,
-  	input wire finished
+  	input wire finished,
 	
 	// Memory Controls
 	input wire read, MDRin, MDRout,
