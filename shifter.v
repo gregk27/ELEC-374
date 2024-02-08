@@ -1,4 +1,4 @@
-module shifter(input [31:0]in, input [7:0]shift, input right, input rotate, output [31:0]out);
+module shifter(input [31:0]in, input [7:0]shift, input right, input rotate, input arithmetic, output [31:0]out);
 
 reg [31:0]result;
 reg [31:0]lowBits;
@@ -10,7 +10,9 @@ assign out = result;
 always @(*) begin
 	
 	lowBits = in & {32{right | rotate}};
-	highBits = in & {32{~right | rotate}};
+	// If arithmetic is set, then all high bits should be in[32]
+	// SHLA is possible input config, but does normal left shift
+	highBits = (in & {32{~right | rotate}}) | {32{right & arithmetic & in[31]}};
 	
 	shiftTmp = right ? ~shift : shift;
 
