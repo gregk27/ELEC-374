@@ -2,7 +2,7 @@
 module datapath_tbv2();
 reg clock, clear, tbIn;
 // Bus input selection lines (device output -> bus input)
-reg RFout, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout;
+reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout;
 // Register write enable lines
 reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin;
 
@@ -19,7 +19,7 @@ reg read, MDRin, MDRout;
 reg [31:0]Mdatain;
 DataPath DP(
 	clock, clear,
-	RFout, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout,
+	RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout,
 	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin,	
 	RFSelect,
 	tbIn, BusMuxInTB,
@@ -31,7 +31,7 @@ DataPath DP(
 
 
 reg [7:0] present_state;
-parameter init = 8'd1, T0 = 8'd2, T1 = 8'd3, T2 = 8'd4, T3 = 8'd5;
+parameter init = 8'd1, T0 = 8'd2, T1 = 8'd3, T2 = 8'd4, T3 = 8'd5, T4 = 8'd6;
 			 
 initial begin clock = 0; present_state = 4'd0; end
 always #10 clock = ~clock;
@@ -77,8 +77,14 @@ always @(present_state) begin
 			RFSelect <= 3;
 			RFout <= 1;
 			#15 RFout <= 0;
-            #1 start <= 1;
+			
+			RZin <= 1;
+         #1 start <= 1;
 			@(negedge clock) #1 start <= 0;
+			@(posedge finished) @(posedge clock) #1 RZin <= 0;
+		end
+		T4: begin 
+			RZLOout <= 1;
 		end
 	endcase
 end

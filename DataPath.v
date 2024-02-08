@@ -1,7 +1,7 @@
 module DataPath(
 	input wire clock, clear,
 	// Bus input selection lines (device output -> bus input)
-	input wire RFout, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout,
+	input wire RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout,
 	// Register write enable lines
 	input wire RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin,
 	// Register file index to use, if RFin or RFout are high
@@ -26,7 +26,7 @@ wire [31:0]BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInM
 
 wire [31:0]BusMuxOut;
 
-wire [63:0] RZ_temp;
+wire [63:0]RZ_out;
 
 
 //Devices
@@ -51,17 +51,21 @@ wire [63:0] ALU_Z;
 
 // ALU
 register RY(clear, clock, RYin, BusMuxOut, BusMuxInRY);
-register #(64, 64, 64'h0) RZ(clear, clock, RZin, ALU_Z, RZ_temp);
+register #(64, 64, 64'h0) RZ(clear, clock, RZin, ALU_Z, RZ_out);
 register RHI(clear, clock, RHIin, BusMuxOut, BusMuxInRHI);
 register RLO(clear, clock, RLOin, BusMuxOut, BusMuxInRLO);
 
+// Selected between low and high RZ bits to send to the bus
+assign BusMuxInRZ = RZLOout ? RZ_out[31:0] : 
+						  RZHIout ? RZ_out[62:32] :
+						  {32{1'dX}};
 
 //Bus
 Bus bus(
 	// Data In
 	BusMuxInTB, BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR, 
 	// Select signals
-	TBout, RFout, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout, MDRout,
+	TBout, RFout, PCout, IRout, RYout, RZLOout | RZHIout, MARout, RHIout, RLOout, MDRout,
 	// Out	
 	BusMuxOut);
 
