@@ -24,7 +24,7 @@ parameter
 reg clock;
 reg [4:0] present_state;
 
-reg [0:5]opSelect;
+reg [5:0]opSelect;
 reg [31:0]A;
 reg [31:0]B;
 reg start;
@@ -59,7 +59,6 @@ parameter init = 5'd0,
 	T_SHR  = 5'd10,
 	T_ROL  = 5'd11,
 	T_ROR  = 5'd12,
-	T_SHLA = 5'd13,
 	T_SHRA = 5'd14;
 
 // Manually tick over from init to NOT, as it won't happen automatically
@@ -137,6 +136,46 @@ always @(present_state) begin
 			@(negedge clock) #1 start <= 0;
 		end
 		
+		T_SHL: begin
+			opSelect <= SHL;
+			A <= 8'b00010101; B <= 2;
+			expectedOut <= 8'b01010100;
+			// Assert start until negedge passed
+			#1 start <= 1;
+			@(negedge clock) #1 start <= 0;
+		end
+		T_SHR: begin
+			opSelect <= SHR;
+			A <= 8'b00010101; B <= 2;
+			expectedOut <= 8'b00000101;
+			// Assert start until negedge passed
+			#1 start <= 1;
+			@(negedge clock) #1 start <= 0;
+		end
+		T_ROL: begin
+			opSelect <= ROL;
+			A <= 32'b10100000000000000000000000000101; B <= 2;
+			expectedOut <= 32'b10000000000000000000000000010110;
+			// Assert start until negedge passed
+			#1 start <= 1;
+			@(negedge clock) #1 start <= 0;
+		end
+		T_ROR: begin
+			opSelect <= ROR;
+			A <= 32'b10100000000000000000000000000101; B <= 2;
+			expectedOut <= 32'b01101000000000000000000000000001;
+			// Assert start until negedge passed
+			#1 start <= 1;
+			@(negedge clock) #1 start <= 0;
+		end
+		T_SHRA: begin
+			opSelect <= ROR;
+			A <= 32'b10100000000000000000000000000101; B <= 2;
+			expectedOut <= 32'b11101000000000000000000000000001;
+			// Assert start until negedge passed
+			#1 start <= 1;
+			@(negedge clock) #1 start <= 0;
+		end
 	endcase
 end
 endmodule
