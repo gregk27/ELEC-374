@@ -31,8 +31,8 @@ parameter
 	
 reg subtract;
 wire [31:0] adder_out;
-reg [31:0] negate_mux;
-adder add(negate_mux, B, subtract, adder_out);
+reg [31:0] adder_mux_A, adder_mux_B;
+adder add(adder_mux_A, adder_mux_B, subtract, adder_out);
 
 
 reg shift_right;
@@ -64,8 +64,9 @@ always @(negedge clock) begin
 			ADD, SUB, NEG: begin
 				// Subtract based on bit 0
 				subtract <= opSelect[0];
-				// Mux in a 0 if negate bit is high
-				negate_mux <= opSelect[1] ? 0 : A;
+				// Mux in adjusted values if negate bit is high
+				adder_mux_A <= opSelect[1] ? 0 : A;
+				adder_mux_B <= opSelect[1] ? A : B;
 			end
 			MUL: mul_start <= 1;
 			DIV: div_start <= 1;
