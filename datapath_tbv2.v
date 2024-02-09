@@ -31,7 +31,7 @@ DataPath DP(
 
 
 reg [7:0] present_state;
-parameter init = 8'd1, T0 = 8'd2, T1 = 8'd3, T2 = 8'd4, T3 = 8'd5, T4 = 8'd6;
+parameter init = 8'd1, T0 = 8'd2, T1 = 8'd3, T2 = 8'd4, T3 = 8'd5, T4 = 8'd7;
 			 
 initial begin clock = 0; present_state = 4'd0; end
 always #10 clock = ~clock;
