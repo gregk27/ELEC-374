@@ -41,7 +41,7 @@ register IR(clear, clock, IRin, BusMuxOut, BusMuxInIR);
 
 // Memory
 register MAR(clear, clock, MARin, BusMuxOut, BusMuxInMAR);
-wire [31:0]MDMux = read ? BusMuxOut : Mdatain;
+wire [31:0]MDMux = read ? Mdatain : BusMuxOut;
 register MDR(clear, clock, MDRin, MDMux, BusMuxInMDR);
 
 
