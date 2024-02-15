@@ -29,3 +29,5 @@ add wave sim:/DP/RLO/q
 
 restart -f
 run $2 ns
+
+wave zoom full
