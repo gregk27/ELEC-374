@@ -28,6 +28,8 @@ parameter
 	SHLA 	= 5'b11100,
 	SHRA 	= 5'b11101;
 
+// Cache the value coming from the bus as it may be corrupted when outputs change, causing issues with some modules
+reg [31:0] bCache;
 	
 reg subtract;
 wire [31:0] adder_out;
@@ -39,23 +41,24 @@ reg shift_right;
 reg shift_rotation;
 reg shift_arithmetic;
 wire [31:0] shift_out;
-shifter shift(A, B[7:0], shift_right, shift_rotation, shift_arithmetic, shift_out);
+shifter shift(A, bCache[7:0], shift_right, shift_rotation, shift_arithmetic, shift_out);
 
 
 reg mul_start;
 wire mul_finished;
 wire [31:0] mul_lo, mul_hi;
-multiplier mul(clock, mul_start, A, B, mul_lo, mul_hi, mul_finished);
+multiplier mul(clock, mul_start, A, bCache, mul_lo, mul_hi, mul_finished);
 
 reg div_start;
 wire div_finished;
 wire [31:0] quotient, remainder;
-divider div(clock, div_start, A, B, quotient, remainder, div_finished);
+divider div(clock, div_start, A, bCache, quotient, remainder, div_finished);
 
 // Run on negedge clock to have values ready by the positive edge
 always @(negedge clock) begin
 	// If start is asserted, clear finished flag and begin setup this cycle
 	if(start) begin
+		bCache <= B;
 		finished = 0;
 		// First run setup to configure the inputs and outputs to perform the calculation
 		case (opSelect)
