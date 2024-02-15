@@ -83,7 +83,7 @@ begin
             RFin <= 0; Mdatain <= 32'h00000000;
         end
         Reg_load1a: begin
-            Mdatain <= 32'b1000;
+            Mdatain <= 32'b11111111111111111111111111111000;
             Read = 0; MDRin = 0; // the first zero is there for completeness
             #10 Read <= 1; MDRin <= 1;
             #15 Read <= 0; MDRin <= 0;
@@ -129,6 +129,7 @@ begin
             RFout <= 1; RYin <= 1;
         end
         T4: begin
+            RYin <= 0;
             RFSelect <= 3;
             RFout <= 1; opSelect <= 5'b11101; RZin <= 1;
 				start <= 1;
@@ -137,6 +138,7 @@ begin
         T5: begin
 				RFSelect <= 1;
             RZLOout <= 1; RFin <= 1;
+            expectedValue <= 32'b11111111111111111111111111111110;
         end
     endcase
 	holdState = 0;

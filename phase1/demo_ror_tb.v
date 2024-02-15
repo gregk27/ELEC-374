@@ -1,4 +1,3 @@
-// and datapath_tb.v file: <This is the filename>
 `timescale 1ns/10ps
 module demo_ror_tb();
 
@@ -83,7 +82,7 @@ begin
             RFin <= 0; Mdatain <= 32'h00000000;
         end
         Reg_load1a: begin
-            Mdatain <= 32'b0001;
+            Mdatain <= 32'hABC00012;
             Read = 0; MDRin = 0; // the first zero is there for completeness
             #10 Read <= 1; MDRin <= 1;
             #15 Read <= 0; MDRin <= 0;
@@ -91,17 +90,17 @@ begin
         Reg_load1b: begin
             #5  RFSelect <= 2;
             #5  MDRout <= 1; RFin <= 1;
-            #15 MDRout <= 0; RFin <= 0; // initialize R2 with the value $0001
+            #15 MDRout <= 0; RFin <= 0; // initialize R2 with the value $12
         end
         Reg_load2a: begin
-            Mdatain <= 32'h00000002;
+            Mdatain <= 32'h00000008;
             #10 Read <= 1; MDRin <= 1;
             #15 Read <= 0; MDRin <= 0;
         end
         Reg_load2b: begin
             #5  RFSelect <= 3;
             #5  MDRout <= 1; RFin <= 1;
-            #15 MDRout <= 0; RFin <= 0; // initialize R3 with the value $2
+            #15 MDRout <= 0; RFin <= 0; // initialize R3 with the value $14
         end
         Reg_load3a: begin
             Mdatain <= 32'h00000018;
@@ -118,7 +117,7 @@ begin
         end
         T1: begin
             RZLOout <= 0; PCin <= 1; Read <= 1; MDRin <= 1;
-            Mdatain <= 32'hD8918000; // opcode for “ror R1, R2, R3”
+            Mdatain <= 32'h40918000; // opcode for "ror R1, R2, R3”
         end
         T2: begin
             MDRout <= 1; IRin <= 1;
@@ -129,6 +128,7 @@ begin
             RFout <= 1; RYin <= 1;
         end
         T4: begin
+            RYin <= 0;
             RFSelect <= 3;
             RFout <= 1; opSelect <= 5'b11011; RZin <= 1;
 				start <= 1;
@@ -137,6 +137,7 @@ begin
         T5: begin
 				RFSelect <= 1;
             RZLOout <= 1; RFin <= 1;
+            expectedValue <= 32'h12ABC000;
         end
     endcase
 	holdState = 0;

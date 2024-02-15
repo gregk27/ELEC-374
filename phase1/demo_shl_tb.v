@@ -129,6 +129,7 @@ begin
             RFout <= 1; RYin <= 1;
         end
         T4: begin
+            RYin <= 0;
             RFSelect <= 3;
             RFout <= 1; opSelect <= 5'b11000; RZin <= 1;
 				start <= 1;
@@ -137,6 +138,7 @@ begin
         T5: begin
 				RFSelect <= 1;
             RZLOout <= 1; RFin <= 1;
+            expectedValue <= 32'b1000;
         end
     endcase
 	holdState = 0;
