@@ -119,7 +119,7 @@ begin
         end
         T1: begin
             RZLOout <= 0; PCin <= 1; Read <= 1; MDRin <= 1;
-            Mdatain <= 32'h2C918000; // opcode for or R1, R2, R3”
+            Mdatain <= 32'h58918000; // opcode for or R1, R2, R3”
         end
         T2: begin
             MDRout <= 1; IRin <= 1;

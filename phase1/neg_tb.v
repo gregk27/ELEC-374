@@ -108,7 +108,7 @@ begin
         end
         T1: begin
             RZLOout <= 0; PCin <= 1; Read <= 1; MDRin <= 1;
-            Mdatain <= 32'h8BB0000; // opcode for “neg R7, R6”
+            Mdatain <= 32'h8BB00000; // opcode for “neg R7, R6”
         end
         T2: begin
             MDRout <= 1; IRin <= 1;
