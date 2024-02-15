@@ -115,6 +115,7 @@ begin
 			#10 MDRout <= 0;
         end
         T3: begin
+            IRin <= 0;
             RFSelect <= 7;
             RFout <= 1; RYin <= 1;
             pSelect <= 5'b00111; RZin <= 1;
