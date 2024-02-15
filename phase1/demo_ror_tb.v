@@ -12,7 +12,8 @@ reg [3:0]RFSelect;
 reg [31:0] BusMuxInTB;
 
 // ALU
-reg start, finished;
+reg start;
+wire finished;
 reg [5:0]opSelect;
 // Memory
 reg Read, MDRin, MDRout;
