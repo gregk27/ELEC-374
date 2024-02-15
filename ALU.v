@@ -103,7 +103,7 @@ always @(negedge clock) begin
 				// Pull start flag low so div can run
 				div_start <= 0;
 				// Copy over current values
-				out <= quotient;
+				out <= {remainder, quotient};
 				finished <= div_finished;
 			end
 			SHL, SHR, ROL, ROR, SHRA, SHLA: begin

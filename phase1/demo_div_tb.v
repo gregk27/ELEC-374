@@ -1,6 +1,6 @@
 // and datapath_tb.v file: <This is the filename>
 `timescale 1ns/10ps
-module demo_mul_tb();
+module demo_div_tb();
 
 reg Clock, clear, tbIn;
 // Bus input selection lines (device output -> bus input)
@@ -83,7 +83,7 @@ begin
             RFin <= 0; Mdatain <= 32'h00000000;
         end
         Reg_load1a: begin
-            Mdatain <= 32'h1000000F;
+            Mdatain <= 32'd64;
             Read = 0; MDRin = 0; // the first zero is there for completeness
             #10 Read <= 1; MDRin <= 1;
             #15 Read <= 0; MDRin <= 0;
@@ -94,7 +94,7 @@ begin
             #15 MDRout <= 0; RFin <= 0; // initialize R4 with the value $0x1000000F
         end
         Reg_load2a: begin
-            Mdatain <= 32'h00000020;
+            Mdatain <= 32'd5;
             #10 Read <= 1; MDRin <= 1;
             #15 Read <= 0; MDRin <= 0;
         end
@@ -108,7 +108,7 @@ begin
         end
         T1: begin
             RZLOout <= 0; PCin <= 1; Read <= 1; MDRin <= 1;
-            Mdatain <= 32'h7A280000; // opcode for "mul r4, r5"
+            Mdatain <= 32'h82280000; // opcode for "div r4, r5"
         end
         T2: begin
             MDRout <= 1; IRin <= 1;
@@ -121,7 +121,7 @@ begin
         T4: begin
             RYin <= 0;
             RFSelect <= 5;
-            RFout <= 1; opSelect <= 5'b01000; RZin <= 1;
+            RFout <= 1; opSelect <= 5'b01001; RZin <= 1;
             start <= 1;
             #15 start <= 0;
             // Wait for calculation to finish before saving result
@@ -129,12 +129,12 @@ begin
         end
         T5: begin
             RZLOout <= 1; RLOin <= 1;
-            expectedValue <= 32'b111100000;
+            expectedValue <= 32'd12;
             #20 RZLOout <= 0; RLOin <= 0;
         end
         T6: begin
             RZHIout <= 1; RHIin <= 1;
-            expectedValue <= 32'b0010;
+            expectedValue <= 32'd4;
         end
     endcase
 	holdState = 0;
