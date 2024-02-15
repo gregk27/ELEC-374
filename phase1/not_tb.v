@@ -66,7 +66,6 @@ begin
 			  T1 : Present_state = T2;
 			  T2 : Present_state = T3;
 			  T3 : Present_state = T4;
-			  T4 : Present_state = T5;
 		 endcase
 	 end
 end
@@ -117,14 +116,11 @@ begin
         T3: begin
             RFSelect <= 7;
             RFout <= 1; RYin <= 1;
+            opSelect <= 5'b00001; RZin <= 1;
         end
         T4: begin
-            RFSelect <= 0;  // Use R0 to demonstrate correct value used
-            RFout <= 1; opSelect <= 5'b00001; RZin <= 1;
-			start <= 1;
-			#15 start <= 0;
-        end
-        T5: begin
+            #1 start <= 1; RYin <= 0; RFout <= 0;
+            #10 start <= 0;
 			RFSelect <= 6;
             RZLOout <= 1; RFin <= 1;
 			expectedValue <= 32'hFFFFFFED;
