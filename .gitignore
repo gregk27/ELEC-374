@@ -59,7 +59,7 @@
 !*.tcl
 
 # TODO: Clean this up a bit
-!phase1/
-phase1/*.bak
+!testbenches/
+testbenches/**/*.bak
 
 # End of https://www.toptal.com/developers/gitignore/api/alteraquartusii
