@@ -13,7 +13,7 @@ module DataPath(
 	// alu requirments
 	input wire [5:0]opSelect,
 	input wire start,
-  	input wire finished,
+  	output wire finished,
 	
 	// Memory Controls
 	input wire read, MDRin, MDRout,
@@ -41,7 +41,7 @@ register IR(clear, clock, IRin, BusMuxOut, BusMuxInIR);
 
 // Memory
 register MAR(clear, clock, MARin, BusMuxOut, BusMuxInMAR);
-wire [31:0]MDMux = read ? BusMuxOut : Mdatain;
+wire [31:0]MDMux = read ? Mdatain : BusMuxOut;
 register MDR(clear, clock, MDRin, MDMux, BusMuxInMDR);
 
 
