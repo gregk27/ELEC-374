@@ -129,8 +129,8 @@ always @(present_state) begin
 		end
 		T_DIV: begin
 			opSelect <= DIV;
-			A <= 24; B <= 8;
-			expectedOut <= 3;
+			A <= 25; B <= 7;
+			expectedOut <= {32'd4, 32'd3};
 			// Assert start until negedge passed
 			#1 start <= 1;
 			@(negedge clock) #1 start <= 0;
