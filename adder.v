@@ -2,7 +2,7 @@
 module adder(input [31:0]A, input [31:0]B, input subtract, output [31:0]Result);
 
 reg [31:0] Results;
-reg [31:0] Generate;
+reg [31:0] Gen;
 reg [32:0] Propogate;
 reg [33:0] LocalCarry;
 
@@ -19,11 +19,11 @@ always@(A or B or subtract)
 		// Negate B based on subtract bit
 		Btmp = B ^ {32{subtract}};
 		// Perform these operations first as they can run in parallel
-		Generate = A & Btmp;
+		Gen = A & Btmp;
 		Propogate = A | Btmp;
 		for(i = 0; i < 32; i = i + 1)
 		begin
-				LocalCarry[i+1] = (Generate[i] | (Propogate[i] & LocalCarry[i]));
+				LocalCarry[i+1] = (Gen[i] | (Propogate[i] & LocalCarry[i]));
 				Results[i] = A[i] ^ Btmp[i] ^ LocalCarry[i];
 		end
 end
