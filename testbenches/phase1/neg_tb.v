@@ -118,7 +118,7 @@ begin
             IRin <= 0;
             RFSelect <= 7;
             RFout <= 1; RYin <= 1;
-            pSelect <= 5'b00111; RZin <= 1;
+            opSelect <= 5'b00111; RZin <= 1;
         end
         T4: begin
             #1 start <= 1; RYin <= 0; RFout <= 0;
