@@ -54,6 +54,7 @@
 !*.sof
 !*.mif
 !*.qip
+!*.ram
 ## tbd
 
 !*.tcl
