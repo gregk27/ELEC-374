@@ -1,30 +1,28 @@
 module Select(
-    input clock,
-    input  [31:0] BusMuxOut,
+    input [31:0] IR,
     input   BAout,
-    input  [3:0] Gra, Grb, Grc,
-    input   BAout,
-    input  reg [31:0] Rout, Rin,
-    output wire[15:0] registerIn[15:0],
-    output wire[15:0] registersOut[15:0],
+    input  Gra, Grb, Grc, Rout, Rin,
     output [31:0] C_sign_extended,
-    output wire[31:0] BusMuxIn
+    output R0in, R1in, R2in, R3in, R4in, R5in, R6in, R7in, R8in, R9in, R10in, R11in, R12in, R13in, R14in, R15in,
+    output R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, R10out, R11out, R12out, R13out, R14out, R15out,
+
     );
-
-reg [15:0] = result;
-
-//Bus into IR (idk how to use IR in verilog)
-Ra = BusMuxOut[26:23];
-Rb = BusMuxOut[22:19];
-Rc = BusMuxOut[18:15];
-genvar i;
+reg [3:0] OPCode, Ra, Rb, Rc;
+reg [3:0] decoderinput;
+reg [15:0] result;
+reg [31:0] C;
+reg [15:0] registersIn;
+reg [15:0] registersOut;
+integer i;
 //Select and Encode Logic
-always @ (posedge clock);
+always @ (*);
     begin
-        or(decoderinput, blaL, blaM, blaR)
-        and(blaL, Gra, Ra)
-        and(blaM, Grb, Rb)
-        and(blaR, Grc, Rc)
+        OPCode = IR[31:27];
+        Ra = IR[26:23];
+        Rb = IR[22:19];
+        Rc = IR[18:15];    
+        decoderinput = (Ra & Gra) | (Rb & Grb) | (Rc & Grc);
+        
         case(decoderinput)
             4'b0000: result = 16'b0000_0000_0000_0001;
             4'b0001: result = 16'b0000_0000_0000_0010;
@@ -45,12 +43,17 @@ always @ (posedge clock);
             default: result = 16'b0000_0000_0000_0000; // In case of invalid input
         endcase
         for(i=0;i<16, i=i+1) begin: 
-            registersIn[i] = Rin && result[i];
+            registersIn[i] = Rin & result[i];
         end
         for(i=0;i<16, i=i+1) begin: 
-            registersOut[i] = (Rout || BAout) && result[i];
+            registersOut[i] = (Rout | BAout) & result[i];
         end
+        C = IR[18] ? { {13{1'b1}}, IR[18:0] } : { {13{1'b0}}, IR[18:0] };
+
     end
+    assign {R15in, R14in, R13in, R12in, R11in, R10in, R9in, R8in, R7in, R6in, R5in, R4in, R3in, R2in, R1in, R0in} = registersIn;
+    assign {R15out, R14out, R13out, R12out, R11out, R10out, R9out, R8out, R7out, R6out, R5out, R4out, R3out, R2out, R1out, R0out} = registersOut;
+    assign C_sign_extended = C;
 endmodule
 
 
