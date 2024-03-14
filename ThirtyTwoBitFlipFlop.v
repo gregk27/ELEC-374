@@ -15,4 +15,4 @@ always (@posedge clock)
 		else
 			Q <= D;
 	end
-	
+endmodule
