@@ -16,7 +16,7 @@ module DataPath(
   	output wire finished,
 	
 	// Memory Controls
-	input wire read, MDRin, MDRout,
+	input wire read, MDRin, MDRout, write, memFinished,
 	input wire [31:0]Mdatain
 );
 
@@ -42,7 +42,10 @@ register IR(clear, clock, IRin, BusMuxOut, BusMuxInIR);
 // Memory
 register MAR(clear, clock, MARin, BusMuxOut, BusMuxInMAR);
 wire [31:0]MDMux = read ? Mdatain : BusMuxOut;
-register MDR(clear, clock, MDRin, MDMux, BusMuxInMDR);
+wire [31:0]MDRDataOut;
+register MDR(clear, clock, MDRin, MDMux, MDRDataOut);
+// Buffer line to allow for memory inout operation. Switches MDR output to HiZ when data is ready to read back
+RAM ram(clock, read, write, BusMuxInMAR, BusMuxInMDR, memFinished);
 
 
 // connecting wire

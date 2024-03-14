@@ -17,7 +17,7 @@ assign data = read ? _data : 'bz;
 initial $readmemh("RAM_empty.ram", mem);
 
 // Include negative clock edge to make finished change
-always @(posedge clock, negedge clock) begin
+always @(posedge clock) begin
     // Assert finished low at the start
     finished = 0;
 

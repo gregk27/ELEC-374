@@ -50,14 +50,14 @@ set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH RAM -section_id eda_simulation
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH MemSys -section_id eda_simulation
 set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
 
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -entity ALU -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -entity ALU -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -entity ALU -section_id Top
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity ALU -section_id Top
-set_global_assignment -name TOP_LEVEL_ENTITY RAM
+set_global_assignment -name TOP_LEVEL_ENTITY MemSys
 set_global_assignment -name EDA_TEST_BENCH_NAME "Phase 1" -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id "Phase 1"
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "500 ns" -section_id "Phase 1"
@@ -86,37 +86,10 @@ set_global_assignment -name EDA_TEST_BENCH_NAME shifter -section_id eda_simulati
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id shifter
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "500 ns" -section_id shifter
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME shifter -section_id shifter
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name EDA_TEST_BENCH_NAME RAM -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id RAM
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "200 ns" -section_id RAM
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME RAM -section_id RAM
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/and_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/and_tb.v.bak -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/debug.do -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo.do -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_add_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_div_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_mul_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_or_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_rol_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_ror_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shl_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shr_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shra_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_sub_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/neg_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/not_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/adder_tb.v -section_id adder
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/ALU_tb.v -section_id ALU
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/divider_tb.v -section_id divider
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/multiplier_tb.v -section_id multiplier
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/RegFile_tb.v -section_id RegFile
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/shifter_tb.v -section_id shifter
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/RAM_tb.v -section_id RAM
 set_global_assignment -name VERILOG_FILE testbenches/RAM_tb.v
 set_global_assignment -name SOURCE_FILE RAM_empty.ram
 set_global_assignment -name VERILOG_FILE RAM.v
@@ -151,3 +124,37 @@ set_global_assignment -name VERILOG_FILE Bus.v
 set_global_assignment -name VERILOG_FILE adder.v
 set_global_assignment -name VERILOG_FILE register.v
 set_global_assignment -name VERILOG_FILE DataPath.v
+set_global_assignment -name VERILOG_FILE MemSys.v
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name EDA_TEST_BENCH_NAME MemSys -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id MemSys
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME MemSys_tb -section_id MemSys
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/and_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/and_tb.v.bak -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/debug.do -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo.do -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_add_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_div_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_mul_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_or_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_rol_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_ror_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shl_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shr_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shra_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_sub_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/neg_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/not_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/adder_tb.v -section_id adder
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/ALU_tb.v -section_id ALU
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/divider_tb.v -section_id divider
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/multiplier_tb.v -section_id multiplier
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/RegFile_tb.v -section_id RegFile
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/shifter_tb.v -section_id shifter
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/RAM_tb.v -section_id RAM
+set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "100 ns" -section_id MemSys
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/MemSys_tb.v -section_id MemSys
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name HEX_FILE DataPath.hex
