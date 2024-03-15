@@ -6,24 +6,20 @@ module MemSys (
 	output wire finished
 );
 
-wire [31:0]MDRDataOut;
 wire [31:0]address;
 
-reg read_internal = 0;
-reg write_internal = 0;
+reg [31:0]MDR = 0;
 
 wire [31:0]MDMux = read ? memData : BusMuxOut;
-assign memData = finished && read_internal ? 32'hz : MDRDataOut;
+assign memData = finished && read ? 32'hz : MDR;
 
 register MAR(clear, clock, MARin, BusMuxOut, address);
-register MDR(clear, clock, MDRin, MDMux, MDRDataOut);
-RAM ram(clock, read_internal, write_internal, address, memData, finished);
+RAM ram(clock, read, write, address, memData, finished);
 
-always @(posedge clock, posedge read, posedge write) begin
-	// Keep the read signal to ram asserted until the clock edge to capture it in the register
-	// If a write starts before the register can capture it, that would overwrite it anyway so don't need the capture
-	read_internal = read & !write;
-	write_internal = write && (MDRDataOut == memData);
+// MDR is implemented as an async register because waiting for it was causing a mess
+always @(clear, MDRin, MDMux) begin
+	if(clear) MDR = 0;
+	else if (MDRin)	MDR = MDMux;
 end
 
 endmodule
