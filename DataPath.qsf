@@ -156,5 +156,5 @@ set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/shifter_tb.v -sectio
 set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/RAM_tb.v -section_id RAM
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "100 ns" -section_id MemSys
 set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/MemSys_tb.v -section_id MemSys
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name HEX_FILE DataPath.hex
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
