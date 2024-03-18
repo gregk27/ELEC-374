@@ -3,9 +3,7 @@ module Select(
     input   BAout,
     input  Gra, Grb, Grc, Rout, Rin,
     output [31:0] C_sign_extended,
-    output RFin,
-    output RFselect,
-
+    output RFin, RFselect
     );
 reg [3:0] OPCode, Ra, Rb, Rc;
 reg [3:0] decoderinput;
@@ -15,7 +13,7 @@ reg [15:0] registersIn;
 reg [15:0] registersOut;
 integer i;
 //Select and Encode Logic
-always @ (*);
+always @ (*)
     begin
         OPCode = IR[31:27];
         Ra = IR[26:23];
@@ -42,10 +40,10 @@ always @ (*);
             4'b1111: result = 16'b1000_0000_0000_0000;
             default: result = 16'b0000_0000_0000_0000; // In case of invalid input
         endcase
-        for(i=0;i<16, i=i+1) begin: 
+        for(i=0;i<16; i=i+1) begin
             registersIn[i] = Rin & result[i];
         end
-        for(i=0;i<16, i=i+1) begin: 
+        for(i=0;i<16; i=i+1) begin
             registersOut[i] = (Rout | BAout) & result[i];
         end
         C = IR[18] ? { {13{1'b1}}, IR[18:0] } : { {13{1'b0}}, IR[18:0] };

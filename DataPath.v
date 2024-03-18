@@ -3,9 +3,9 @@ module DataPath(
 	// Bus input selection lines (device output -> bus input)
 	input wire RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout,
 	// Register write enable lines
-	input wire RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin,
+	input wire RFin_TB, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin,
 	// Register file index to use, if RFin or RFout are high
-	input wire [3:0]RFselect,
+	input wire [3:0]RFselect_TB,
 
 	input wire TBout,
 	input wire [31:0]BusMuxInTB,
@@ -17,7 +17,9 @@ module DataPath(
 	
 	// Memory Controls
 	input wire read, MDRin, MDRout,
-	input wire [31:0]Mdatain
+	input wire [31:0]Mdatain,
+
+	input wire BAout, Gra, Grb, Grc, Rout, Rin
 );
 
 // Connections from device output to bus input
@@ -28,12 +30,16 @@ wire [31:0]BusMuxOut;
 
 wire [63:0]RZ_out;
 
+wire [31:0] C_sign_extended;
+wire RFin;
+wire [3:0]RFselect;
 
 //Devices
 
 
 // Registers
-RegFile RF(clock, clear, RFin, RFselect, BusMuxOut, BusMuxInRF);
+RegFile RF(clock, clear, RFin | RFin_TB, RFselect, BusMuxOut, BusMuxInRF);
+Select SE(BusMuxInIR, BAout, Gra, Grb, Grc, Rout, Rin, C_sign_extended, RFin, RFselect_TB >= 0 ? RF_select : RFselect);
 
 // Control
 register PC(clear, clock, PCin, BusMuxOut, BusMuxInPC);
