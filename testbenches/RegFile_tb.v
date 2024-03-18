@@ -3,6 +3,7 @@ module RegFile_tb();
 
 reg clock, clear;
 reg RF_en;
+reg BAout;
 reg [3:0]RF_select;
 reg [31:0]dataIn;
 wire [31:0]dataOut;
@@ -10,6 +11,7 @@ wire [31:0]dataOut;
 RegFile rf(
 	clock, clear,
 	RF_en,
+	BAout,
 	RF_select,
 	dataIn,
 	dataOut

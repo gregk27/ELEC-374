@@ -1,6 +1,6 @@
 module RegFile(
 	input wire clock, clear,
-	input wire RF_en,
+	input wire RF_en, BAout,
 	input wire [3:0]RF_select,
 	input wire [31:0]dataIn,
 	output wire [31:0]dataOut
@@ -13,7 +13,8 @@ wire [15:0]enable = RF_en << RF_select;
 wire [31:0]regOuts[15:0];
 
 // Actual output is selected from above
-assign dataOut = regOuts[RF_select];
+// Muxed with new R0 behaviour
+assign dataOut = BAout && RF_select == 0 ? 0 : regOuts[RF_select];
 
 // Generate registers procedurally since it's a pain
 genvar i;
