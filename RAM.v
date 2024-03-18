@@ -18,7 +18,13 @@ initial $readmemh("RAM_empty.ram", mem);
 
 // Currently just clock to avoid finished staying high
 // For much faster preformance, can include read and write
+// Quartus compiler requires only posedge for readmemh, modelsim doesn't care
+// This is super hacky, mostly just to make sure it works
+`ifdef QUARTUS
+always @(posedge clock) begin
+`else
 always @(clock) begin
+`endif
     // Assert finished low at the start
     finished = 0;
 
