@@ -3,8 +3,8 @@ module Select(
     input   BAout,
     input  Gra, Grb, Grc, Rout, Rin,
     output [31:0] C_sign_extended,
-    output R0in, R1in, R2in, R3in, R4in, R5in, R6in, R7in, R8in, R9in, R10in, R11in, R12in, R13in, R14in, R15in,
-    output R0out, R1out, R2out, R3out, R4out, R5out, R6out, R7out, R8out, R9out, R10out, R11out, R12out, R13out, R14out, R15out,
+    output RFin,
+    output RFselect,
 
     );
 reg [3:0] OPCode, Ra, Rb, Rc;
@@ -51,8 +51,8 @@ always @ (*);
         C = IR[18] ? { {13{1'b1}}, IR[18:0] } : { {13{1'b0}}, IR[18:0] };
 
     end
-    assign {R15in, R14in, R13in, R12in, R11in, R10in, R9in, R8in, R7in, R6in, R5in, R4in, R3in, R2in, R1in, R0in} = registersIn;
-    assign {R15out, R14out, R13out, R12out, R11out, R10out, R9out, R8out, R7out, R6out, R5out, R4out, R3out, R2out, R1out, R0out} = registersOut;
+    assign RFin = |registersIn;
+    assign RFselect = decoderinput;
     assign C_sign_extended = C;
 endmodule
 
