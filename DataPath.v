@@ -16,9 +16,10 @@ module DataPath(
   	output wire finished,
 	
 	// Memory Controls
-	input wire read, MDRin, MDRout, write, memFinished,
-
-	input wire BAout, Gra, Grb, Grc, Rout, Rin
+	input wire read, MDRin, write,
+	output wire memFinished,
+	
+	input wire BAout, Gra, Grb, Grc, Rout, Rin, IncPC
 );
 
 // Connections from device output to bus input
@@ -37,8 +38,8 @@ wire [3:0]RFselect;
 
 
 // Registers
-RegFile RF(clock, clear, RFin | RFin_TB, RFselect, BusMuxOut, BusMuxInRF);
-Select SE(BusMuxInIR, BAout, Gra, Grb, Grc, Rout, Rin, C_sign_extended, RFin, RFselect_TB >= 0 ? RF_select : RFselect);
+RegFile RF(clock, clear, RFin | RFin_TB, RFselect_TB >= 0 ? RFSelect_TB : RFselect, BusMuxOut, BusMuxInRF);
+Select SE(BusMuxInIR, BAout, Gra, Grb, Grc, Rout, Rin, C_sign_extended, RFin, RFselect);
 
 // Control
 wire [31:0]newPC;

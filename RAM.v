@@ -23,7 +23,7 @@ initial $readmemh("RAM_empty.ram", mem);
 `ifdef QUARTUS
 always @(posedge clock) begin
 `else
-always @(clock) begin
+always @(clock, address) begin
 `endif
     // Assert finished low at the start
     finished = 0;
