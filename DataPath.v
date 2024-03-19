@@ -41,7 +41,9 @@ RegFile RF(clock, clear, RFin | RFin_TB, RFselect, BusMuxOut, BusMuxInRF);
 Select SE(BusMuxInIR, BAout, Gra, Grb, Grc, Rout, Rin, C_sign_extended, RFin, RFselect_TB >= 0 ? RF_select : RFselect);
 
 // Control
-register PC(clear, clock, PCin, BusMuxOut, BusMuxInPC);
+wire [31:0]newPC;
+adder PCAdder(BusMuxInPC, 32'd1, 31'd0, newPC);
+register PC(clear, clock, IncPC || PCin, IncPC ? newPC : BusMuxOut, BusMuxInPC);
 register IR(clear, clock, IRin, BusMuxOut, BusMuxInIR);
 
 // Memory
