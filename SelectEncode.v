@@ -3,7 +3,7 @@ module Select(
     input   BAout,
     input  Gra, Grb, Grc, Rout, Rin,
     output [31:0] C_sign_extended,
-    output RFin, [3:0]RFselect
+    output RFin, RFout, [3:0]RFselect
     );
 reg [3:0] OPCode, Ra, Rb, Rc;
 reg [3:0] decoderinput;
@@ -19,7 +19,9 @@ always @ (*)
         Ra = IR[26:23];
         Rb = IR[22:19];
         Rc = IR[18:15];    
-        decoderinput = (Ra & Gra) | (Rb & Grb) | (Rc & Grc);
+        decoderinput =  Gra ? Ra :
+                       (Grb ? Rb : 
+                       (Grc ? Rc : 31'hx));
         
         case(decoderinput)
             4'b0000: result = 16'b0000_0000_0000_0001;
@@ -50,6 +52,7 @@ always @ (*)
 
     end
     assign RFin = |registersIn;
+    assign RFout = |registersOut;
     assign RFselect = decoderinput;
     assign C_sign_extended = C;
 endmodule

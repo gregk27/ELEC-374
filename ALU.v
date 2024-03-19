@@ -55,9 +55,9 @@ wire [31:0] quotient, remainder;
 divider div(clock, div_start, A, bCache, quotient, remainder, div_finished);
 
 // Run on negedge clock to have values ready by the positive edge
-always @(negedge clock) begin
+always @(clock) begin
 	// If start is asserted, clear finished flag and begin setup this cycle
-	if(start) begin
+	if(start && !clock) begin
 		bCache <= B;
 		finished = 0;
 		// First run setup to configure the inputs and outputs to perform the calculation

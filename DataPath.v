@@ -1,7 +1,7 @@
 module DataPath(
 	input wire clock, clear,
 	// Bus input selection lines (device output -> bus input)
-	input wire RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout,
+	input wire RFout_TB, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout,
 	// Register write enable lines
 	input wire RFin_TB, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin,
 	// Register file index to use, if RFin or RFout are high
@@ -16,21 +16,20 @@ module DataPath(
   	output wire finished,
 	
 	// Memory Controls
-	input wire read, MDRin, write,
+	input wire read, MDRin, MDRout, write,
 	output wire memFinished,
 	
 	input wire BAout, Gra, Grb, Grc, Rout, Rin, IncPC
 );
 
 // Connections from device output to bus input
-wire [31:0]BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR;
+wire [31:0]BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR, BusMuxInImm;
 
 
 wire [31:0]BusMuxOut;
 
 wire [63:0]RZ_out;
 
-wire [31:0] C_sign_extended;
 wire RFin;
 wire [3:0]RFselect;
 
@@ -38,8 +37,10 @@ wire [3:0]RFselect;
 
 
 // Registers
-RegFile RF(clock, clear, RFin | RFin_TB, RFselect_TB >= 0 ? RFSelect_TB : RFselect, BusMuxOut, BusMuxInRF);
-Select SE(BusMuxInIR, BAout, Gra, Grb, Grc, Rout, Rin, C_sign_extended, RFin, RFselect);
+// Internal selection is testbench override if positive, otherwise generated from opcode
+wire [3:0]_rfSelect = RFselect_TB[3] ? RFselect : RFselect_TB;
+RegFile RF(clock, clear, RFin | RFin_TB, _rfSelect, BusMuxOut, BusMuxInRF);
+Select SE(BusMuxInIR, BAout, Gra, Grb, Grc, Rout, Rin, BusMuxInImm, RFin, RFout, RFselect);
 
 // Control
 wire [31:0]newPC;
@@ -66,9 +67,9 @@ assign BusMuxInRZ = RZLOout ? RZ_out[31:0] :
 //Bus
 Bus bus(
 	// Data In
-	BusMuxInTB, BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR, 
+	BusMuxInTB, BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR, BusMuxInImm,
 	// Select signals
-	TBout, RFout, PCout, IRout, RYout, RZLOout | RZHIout, MARout, RHIout, RLOout, MDRout,
+	TBout, RFout | RFout_TB, PCout, IRout, RYout, RZLOout | RZHIout, MARout, RHIout, RLOout, MDRout, Immout,
 	// Out	
 	BusMuxOut);
 

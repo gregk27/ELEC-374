@@ -4,7 +4,7 @@ module ldi_tb();
 
 reg Clock, clear, tbIn;
 // Bus input selection lines (device output -> bus input)
-reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout;
+reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout;
 // Register write enable lines
 reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin;
 // Register file selection line
@@ -31,7 +31,7 @@ reg [3:0] Present_state = Default;
 
 DataPath DP(
 	Clock, clear,
-	RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout,
+	RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout,
 	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin,	
 	RFSelect,
     // TODO: Remove these signals
@@ -40,7 +40,7 @@ DataPath DP(
    //alu signals
    opSelect, start, finished,
    // Data Signals
-   Read, MDRin, Write, memFinished,
+   Read, MDRin, MDRout, Write, memFinished,
    // Control signals
    BAout, Gra, Grb, Grc, Rout, Rin, IncPC
 );
@@ -86,6 +86,7 @@ begin
             PCin <=0; MDRin <= 0; IRin <= 0; RYin <= 0;
             IncPC <= 0; Read <= 0; opSelect <= 0;
             RFin <= 0;
+            Gra <= 0; Grb <= 0; Grc <= 0; BAout <= 0; Rin <= 0; Rout <= 0;
         end
         Reg_load1a: begin
             // Set PC to the start of the test memory
@@ -102,7 +103,7 @@ begin
             tbIn <= 1;
         end
         Reg_load2b: begin 
-            RFin <= 0;
+            RFin <= 0; RFSelect <= -1;
             tbIn <= 0;
         end
         T0: begin // see if you need to de-assert these signals
@@ -117,24 +118,25 @@ begin
         end
         T2: begin
             // Pass data to instruction register
-            MDRout <= 1; IRin <= 1;
+            PCout <= 0; MARin <= 0;
+            MDRout <= 1; 
+            #5 IRin <= 1;
         end
         T3: begin
-            MDRout <= 0; IRin <= 0;
-
-
+            MDRout <= 0; IRin <= 0; Rout <= 1;
+            Grb <= 1; BAout <= 1; RYin <= 1;
         end
-        // T4: begin
-        //     RFSelect <= 3;
-        //     RFout <= 1; opSelect <= 5'b00010; RZin <= 1;
-		// 		start <= 1;
-		// 		#15 start <= 0;
-        // end
-        // T5: begin
-		// 		RFSelect <= 1;
-        //     RZLOout <= 1; RFin <= 1;
-		// 		expectedValue <= 32'h10;
-        // end
+        T4: begin
+            Grb <= 0; BAout <= 0; RYin <= 0; Rout <= 0; Immout <= 1;
+            opSelect <= 5'b00100;
+            RZin <= 1; start <= 1;
+            #10 start <= 0;
+        end
+        T5: begin
+            #20
+            RZin <= 0; Immout <= 0; 
+            RZLOout <= 1; Gra <= 1; Rin <= 1;
+        end
     endcase
 	holdState = 0;
 	end
