@@ -54,8 +54,13 @@ wire div_finished;
 wire [31:0] quotient, remainder;
 divider div(clock, div_start, A, bCache, quotient, remainder, div_finished);
 
+reg canFinish;
+
 // Run on negedge clock to have values ready by the positive edge
-always @(clock) begin
+// NOTE: This breaks the finished signal, for now the ALU is clocked only
+always @(clock, adder_out, mul_finished, div_finished) begin
+	// NOTE: This breaks the finished signal, for now the ALU is clocked only
+	canFinish = 1;
 	// If start is asserted, clear finished flag and begin setup this cycle
 	if(start && !clock) begin
 		bCache <= B;
@@ -84,7 +89,7 @@ always @(clock) begin
 			end
 		endcase
 	end
-	else begin
+	if (canFinish) begin
 		// Once setup is complete, monitor outputs for completion (if applicable)
 		case (opSelect)
 			ADD, SUB, NEG: begin
