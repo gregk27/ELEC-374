@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module RAM(
     input wire clock, read, write, 
     input wire [8:0]address, 
@@ -16,28 +17,26 @@ assign data = read ? _data : 'bz;
 
 initial $readmemh("RAM_empty.ram", mem);
 
-// Currently just clock to avoid finished staying high
 // For much faster preformance, can include read and write
 // Quartus compiler requires only posedge for readmemh, modelsim doesn't care
 // This is super hacky, mostly just to make sure it works
 `ifdef QUARTUS
 always @(posedge clock) begin
 `else
-always @(clock, address) begin
+always @(address, read, write) begin
 `endif
     // Assert finished low at the start
     finished = 0;
 
-    // Perform logic in if block to get desied finished behaviour (high when done, low when working or no-op)
-	 if(clock) begin
-		 if(read) begin
-			  _data = mem[address];
-			  finished = 1;
-		 end else if (write) begin
-			  mem[address] = data;
-			  finished = 1;
-		 end 
-	 end
+	if(read) begin
+		#1 // Make it take some time
+		_data = mem[address];
+		finished = 1;
+	end else if (write) begin
+		#1 // Make it take some time
+		mem[address] = data;
+		finished = 1;
+	end 
 end
 
 endmodule
