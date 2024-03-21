@@ -3,7 +3,8 @@ module Select(
     input   BAout,
     input  Gra, Grb, Grc, Rout, Rin,
     output [31:0] C_sign_extended,
-    output RFin, RFout, [3:0]RFselect
+    output RFin, RFout, 
+	 output [3:0]RFselect
     );
 reg [3:0] OPCode, Ra, Rb, Rc;
 reg [3:0] decoderinput;

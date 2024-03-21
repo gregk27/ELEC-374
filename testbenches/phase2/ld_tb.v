@@ -1,6 +1,6 @@
 // and datapath_tb.v file: <This is the filename>
 `timescale 1ns/10ps
-module ldi_tb();
+module ld_tb();
 
 reg Clock, clear, tbIn;
 // Bus input selection lines (device output -> bus input)
@@ -25,7 +25,7 @@ reg IncPC;
 
 parameter Default = 4'b0000, Reg_load1a = 4'b0001, Reg_load1b = 4'b0010, Reg_load2a = 4'b0011,
     Reg_load2b = 4'b0100, Reg_load3a = 4'b0101, Reg_load3b = 4'b0110, T0 = 4'b0111,
-    T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010, T4 = 4'b1011, T5 = 4'b1100;
+    T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010, T4 = 4'b1011, T5 = 4'b1100, T6 = 4'b1101, T7 = 4'b1110;
 
 reg [3:0] Present_state = Default;
 
@@ -72,6 +72,8 @@ begin
 			  T2 : Present_state = T3;
 			  T3 : Present_state = T4;
 			  T4 : Present_state = T5;
+			  T5 : Present_state = T6;
+			  T6 : Present_state = T7;
 		 endcase
 	 end
 end
@@ -90,7 +92,7 @@ begin
         end
         Reg_load1a: begin
             // Set PC to the start of the test memory
-            BusMuxInTB <= 32'h23 - 1;
+            BusMuxInTB <= 32'h21 - 1 + 1;
             tbIn <= 1; PCin <= 1;
         end
         Reg_load1b: begin
@@ -118,9 +120,8 @@ begin
         end
         T2: begin
             // Pass data to instruction register
-            PCout <= 0; MARin <= 0;
-            MDRout <= 1; 
-            #5 IRin <= 1;
+            PCout <= 0; MARin <= 0; 
+            #5 MDRin <= 0; MDRout <= 1; Read <= 0; IRin <= 1;
         end
         T3: begin
             MDRout <= 0; IRin <= 0; Rout <= 1;
@@ -133,9 +134,18 @@ begin
             #10 start <= 0;
         end
         T5: begin
-            #20
+            #10
             RZin <= 0; Immout <= 0; 
-            RZLOout <= 1; Gra <= 1; Rin <= 1;
+            RZLOout <= 1; MARin <= 1;
+        end
+        T6: begin
+            MARin <= 0;
+            #5 RZLOout <= 0;
+            Read <= 1; MDRin <= 1;
+        end
+        T7: begin
+            Read <= 0; MDRin <= 0;
+            MDRout <= 1; Gra <= 1; Rin <= 1;
         end
     endcase
 	holdState = 0;
