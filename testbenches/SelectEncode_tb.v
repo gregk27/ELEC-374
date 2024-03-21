@@ -38,20 +38,17 @@ always @(present_state) begin
         BAout<=0;Gra<=0; Grb<=0; Grc<=0;
         Rout<=0;Rin<=0;
         #0 IR<=32'b01100xxxxxxxxxxxxxxxxxxxxxxx0101;
-        #5
-    end
+	end
     T0: begin// need opcode for addi instruction and immediate value -3 (2's complement 0xFFFD)
         BAout<=0;Gra<=0; Grb<=0; Grc<=0;
         Rout<=0;Rin<=0;
         #0 IR<=32'b01100xxxxxxxxxxxxxxxxxxxxxxx1101;
-        #5
-		end
-    T1: begin//ldi
-    BAout<=0;Gra<=0; Grb<=0; Grc<=0;
-    Rout<=0;Rin<=0;
-    #0 IR<=32'00001xxxx0001xxxxxxxxxxxxxxx0101;
-    #5
-    end
+	end
+	 T1: begin//ldi
+        BAout<=0;Gra<=0; Grb<=0; Grc<=0;
+        Rout<=0;Rin<=0;
+        #0 IR<=32'b00001xxxx0001xxxxxxxxxxxxxxx0101;
+	end
     endcase
 end      
 endmodule

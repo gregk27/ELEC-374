@@ -56,7 +56,8 @@ always @ (posedge ConIn) begin
 	end
 	else if (temp2) begin
 		temp2 = 1'b1;
-	
+	end
+end	
 assign branch = temp2;
 
 
