@@ -118,9 +118,8 @@ begin
         end
         T2: begin
             // Pass data to instruction register
-            PCout <= 0; MARin <= 0;
-            MDRout <= 1; 
-            #5 IRin <= 1;
+            PCout <= 0; MARin <= 0; 
+            #5 MDRin <= 0; MDRout <= 1; Read <= 0; IRin <= 1;
         end
         T3: begin
             MDRout <= 0; IRin <= 0; Rout <= 1;
