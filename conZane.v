@@ -10,11 +10,11 @@ output wire D
 	 
 	
     parameter branch_if_zero = 2'b00;
-	 parameter branch_if_nonzero = 2'b01;
-	 parameter branch_if_positve = 2'b10;
-	 parameter branch_if_negative = 2'b11;
+	parameter branch_if_nonzero = 2'b01;
+	parameter branch_if_positve = 2'b10;
+	parameter branch_if_negative = 2'b11;
 	 
-	 initial begin
+	initial begin
 		bus_msb = BUS[31];
 		bus_input = ~|BUS;
 		check_reg = IR[20:19];
