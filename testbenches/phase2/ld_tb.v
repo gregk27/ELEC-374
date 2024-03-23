@@ -4,7 +4,7 @@ module ld_tb();
 
 reg Clock, clear, tbIn;
 // Bus input selection lines (device output -> bus input)
-reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout;
+reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout, Inportout;
 // Register write enable lines
 reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin;
 // Register file selection line
@@ -23,6 +23,11 @@ reg BAout, Gra, Grb, Grc, Rout, Rin;
 
 reg IncPC;
 
+// IO
+reg device_strobe, OutportIn;
+reg [31:0]device_in;
+wire [31:0]device_out;
+
 parameter Default = 4'b0000, Reg_load1a = 4'b0001, Reg_load1b = 4'b0010, Reg_load2a = 4'b0011,
     Reg_load2b = 4'b0100, Reg_load3a = 4'b0101, Reg_load3b = 4'b0110, T0 = 4'b0111,
     T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010, T4 = 4'b1011, T5 = 4'b1100, T6 = 4'b1101, T7 = 4'b1110;
@@ -31,8 +36,8 @@ reg [3:0] Present_state = Default;
 
 DataPath DP(
 	Clock, clear,
-	RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout,
-	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin,	
+	RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout, Inportout,
+	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, OutportIn,	
 	RFSelect,
     // TODO: Remove these signals
 	tbIn, BusMuxInTB,
@@ -42,7 +47,9 @@ DataPath DP(
    // Data Signals
    Read, MDRin, MDRout, Write, memFinished,
    // Control signals
-   BAout, Gra, Grb, Grc, Rout, Rin, IncPC
+   BAout, Gra, Grb, Grc, Rout, Rin, IncPC,
+   // IO
+   device_strobe, device_in, device_out
 );
 
 // Flag to pervent state transition while a waiting for a delay

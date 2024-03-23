@@ -1,8 +1,8 @@
 module Bus (
 	//Mux
-	input [31:0]BusMuxInTB, BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR,	BusMuxInImm,
+	input [31:0]BusMuxInTB, BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR,	BusMuxInImm, BuxMuxInInport,
 	//Encoder
-	input TBout, RFout, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout, MDRout, Immout,
+	input TBout, RFout, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout, MDRout, Immout, InportOut,
 
 	output wire [31:0]BusMuxOut
 );
@@ -21,6 +21,7 @@ always @ (*) begin
 	if(RLOout) q = BusMuxInRLO;
 	if(MDRout) q = BusMuxInMDR;
 	if(Immout) q = BusMuxInImm;
+	if(InportOut) q = BuxMuxInInport;
 end
 assign BusMuxOut = q;
 endmodule
