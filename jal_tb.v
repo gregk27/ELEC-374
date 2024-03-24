@@ -32,7 +32,7 @@ reg [3:0] Present_state = Default;
 DataPath DP(
 	Clock, clear,
 	RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout,
-	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin,	
+	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, conffin,	
 	RFSelect,
     // TODO: Remove these signals
 	tbIn, BusMuxInTB,
@@ -42,7 +42,7 @@ DataPath DP(
    // Data Signals
    Read, MDRin, MDRout, Write, memFinished,
    // Control signals
-   BAout, Gra, Grb, Grc, Rout, Rin, IncPC
+   BAout, Gra, Grb, Grc, Rout, Rin, IncPC, branch
 );
 
 // Flag to pervent state transition while a waiting for a delay
@@ -134,11 +134,12 @@ begin
 				
         end
 		  T5: begin
+				
             RZin <= 0; Immout <= 0; 
-            RZLOout <= 1; RFSelect <= 15; RFin <= 1;
+            RZLOout <= 1; RFSelect <= 2; RFin <= 1;
         end
 		  T6: begin
-				RFin <= 0; RZLOout <= 0;
+				RZLOout <= 0; RFSelect <= -1; RFin <= 0;
             PCin <= 1; Gra <= 1; Rout <= 1;
         end
 			
