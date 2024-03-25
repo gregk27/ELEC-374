@@ -3,7 +3,7 @@ module DataPath(
 	// Bus input selection lines (device output -> bus input)
 	input wire RFout_TB, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout,
 	// Register write enable lines
-	input wire RFin_TB, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin,
+	input wire RFin_TB, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, conffin,//enable wire for the conff logic
 	// Register file index to use, if RFin or RFout are high
 	input wire [3:0]RFselect_TB,
 
@@ -17,13 +17,15 @@ module DataPath(
 	
 	// Memory Controls
 	input wire read, MDRin, MDRout, write,
-	output wire memFinished,
+	output wire memFinished, 
 	
-	input wire BAout, Gra, Grb, Grc, Rout, Rin, IncPC
+	input wire BAout, Gra, Grb, Grc, Rout, Rin, IncPC,
+	output wire branch // indicates if we need to branch or not for conff
 );
 
 // Connections from device output to bus input
 wire [31:0]BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR, BusMuxInImm;
+
 
 
 wire [31:0]BusMuxOut;
@@ -47,6 +49,9 @@ wire [31:0]newPC;
 adder PCAdder(BusMuxInPC, 32'd1, 31'd0, newPC);
 register PC(clear, clock, IncPC || PCin, IncPC ? newPC : BusMuxOut, BusMuxInPC);
 register IR(clear, clock, IRin, BusMuxOut, BusMuxInIR);
+
+// conff logic
+conff con(BusMuxInRF, BusMuxInIR, conffin, branch);
 
 // Memory
 MemSys memory(clock, clear, read, write, MARin, MDRin, BusMuxOut, BusMuxInMDR, memFinished);
