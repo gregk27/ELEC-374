@@ -6,7 +6,7 @@ reg Clock, clear, tbIn;
 // Bus input selection lines (device output -> bus input)
 reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout;
 // Register write enable lines
-reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin;
+reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, CONFFin;
 // Register file selection line
 reg [3:0]RFSelect;
 
@@ -14,7 +14,7 @@ reg [31:0] BusMuxInTB;
 
 // ALU
 reg start;
-wire finished, memFinished;
+wire finished, memFinished, branch;
 reg [5:0]opSelect;
 // Memory
 reg Read, Write, MDRin, MDRout;
@@ -32,7 +32,7 @@ reg [3:0] Present_state = Default;
 DataPath DP(
 	Clock, clear,
 	RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout,
-	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, conffin,	
+	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, CONFFin,	
 	RFSelect,
     // TODO: Remove these signals
 	tbIn, BusMuxInTB,
