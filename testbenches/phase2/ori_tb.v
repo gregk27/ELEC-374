@@ -95,9 +95,9 @@ begin
             tbIn <= 0; PCin <= 0;
         end
         Reg_load2a: begin
-            // Place 1 into R5
-            BusMuxInTB <= 1;
-            RFSelect <= 6; RFin <= 1;
+            // Place 0b1010101010 into R4
+            BusMuxInTB <= 32'b1010101010;
+            RFSelect <= 4; RFin <= 1;
             tbIn <= 1;
         end
         Reg_load2b: begin 
