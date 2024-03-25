@@ -92,7 +92,7 @@ begin
         end
         Reg_load1a: begin
             // Set PC to the start of the test memory
-            BusMuxInTB <= 32'h25 - 1 + 1;
+            BusMuxInTB <= 32'h25 - 1;
             tbIn <= 1; PCin <= 1;
         end
         Reg_load1b: begin

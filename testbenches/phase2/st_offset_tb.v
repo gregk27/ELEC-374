@@ -1,6 +1,6 @@
 // and datapath_tb.v file: <This is the filename>
 `timescale 1ns/10ps
-module ld_tb();
+module st_offset_tb();
 
 reg Clock, clear, tbIn;
 // Bus input selection lines (device output -> bus input)
@@ -92,16 +92,16 @@ begin
         end
         Reg_load1a: begin
             // Set PC to the start of the test memory
-            BusMuxInTB <= 32'h21 - 1;
+            BusMuxInTB <= 32'h25 - 1 + 1;
             tbIn <= 1; PCin <= 1;
         end
         Reg_load1b: begin
             tbIn <= 0; PCin <= 0;
         end
         Reg_load2a: begin
-            // Place 2 into R2
-            BusMuxInTB <= 2;
-            RFSelect <= 2; RFin <= 1;
+            // Place 0x43 into R1
+            BusMuxInTB <= 32'h43;
+            RFSelect <= 1; RFin <= 1;
             tbIn <= 1;
         end
         Reg_load2b: begin 
@@ -141,11 +141,10 @@ begin
         T6: begin
             MARin <= 0;
             #5 RZLOout <= 0;
-            Read <= 1; MDRin <= 1;
+            MDRin <= 1;
         end
         T7: begin
-            Read <= 0; MDRin <= 0;
-            MDRout <= 1; Gra <= 1; Rin <= 1;
+            Gra <= 1; Rout <= 1; Write <= 1; 
         end
     endcase
 	holdState = 0;
