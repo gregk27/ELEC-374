@@ -8,7 +8,7 @@ reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout
 // Register write enable lines
 reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, CONFFin;
 // Register file selection line
-reg [3:0]RFSelect;
+reg [4:0]RFSelect;
 
 reg [31:0] BusMuxInTB;
 
@@ -120,7 +120,8 @@ begin
         end
         T3: begin
             MDRout <= 0; IRin <= 0; Rout <= 1;
-            Gra <= 1; PCin <= 1;
+            Gra <= 1;
+            #5 PCin <= 1;
         end
     endcase
 	holdState = 0;

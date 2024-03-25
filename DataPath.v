@@ -5,7 +5,8 @@ module DataPath(
 	// Register write enable lines
 	input wire RFin_TB, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, conffin,//enable wire for the conff logic
 	// Register file index to use, if RFin or RFout are high
-	input wire [3:0]RFselect_TB,
+	// Use 5 bits so that high bit can be flag
+	input wire [4:0]RFselect_TB,
 
 	input wire TBout,
 	input wire [31:0]BusMuxInTB,
@@ -40,7 +41,7 @@ wire [3:0]RFselect;
 
 // Registers
 // Internal selection is testbench override if positive, otherwise generated from opcode
-wire [3:0]_rfSelect = RFselect_TB[3] ? RFselect : RFselect_TB;
+wire [3:0]_rfSelect = RFselect_TB[4] ? RFselect[3:0] : RFselect_TB;
 RegFile RF(clock, clear, RFin | RFin_TB, _rfSelect, BusMuxOut, BusMuxInRF);
 Select SE(BusMuxInIR, BAout, Gra, Grb, Grc, Rout, Rin, BusMuxInImm, RFin, RFout, RFselect);
 

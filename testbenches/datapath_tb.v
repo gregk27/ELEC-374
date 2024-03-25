@@ -6,7 +6,7 @@ reg RFout, PCout, IRout, RYout, RZout, MARout, RHIout, RLOout;
 // Register write enable lines
 reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin;
 
-reg [3:0]RFSelect;
+reg [4:0]RFSelect;
 
 reg[31:0] BusMuxInTB;
 

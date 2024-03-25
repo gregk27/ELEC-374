@@ -8,7 +8,7 @@ reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout
 // Register write enable lines
 reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, CONFFin;
 // Register file selection line
-reg [3:0]RFSelect;
+reg [4:0]RFSelect;
 
 reg [31:0] BusMuxInTB;
 
@@ -136,7 +136,7 @@ begin
 		  T5: begin
 				
             RZin <= 0; Immout <= 0; 
-            RZLOout <= 1; RFSelect <= 2; RFin <= 1;
+            RZLOout <= 1; RFSelect <= 15; RFin <= 1;
         end
 		  T6: begin
 				RZLOout <= 0; RFSelect <= -1; RFin <= 0;
