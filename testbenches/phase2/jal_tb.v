@@ -123,23 +123,24 @@ begin
         T3: begin
 				IncPC <= 0;
             MDRout <= 0; IRin <= 0; 
-            PCout <= 1; RYin <= 1;
+            PCout <= 1; //RYin <= 1;
+            RFSelect <= 15; RFin <= 1;
         end
 		  T4: begin
-            RYin <= 0; PCout <= 0; Immout <= 1; 
-				
-            opSelect <= 5'b00100;
-            RZin <= 1; start <= 1;
-            #10 start <= 0; 
+            RYin <= 0; PCout <= 0; //Immout <= 1; 
+			RFin <= 0;
+            // opSelect <= 5'b00100;
+            // RZin <= 1; start <= 1;
+            // #10 start <= 0; 
 				
         end
 		  T5: begin
 				
-            RZin <= 0; Immout <= 0; 
-            RZLOout <= 1; RFSelect <= 15; RFin <= 1;
+            // RZin <= 0; Immout <= 0; 
+            // RZLOout <= 1; RFSelect <= 15; RFin <= 1;
         end
 		  T6: begin
-				RZLOout <= 0; RFSelect <= -1; RFin <= 0;
+            RZLOout <= 0; RFSelect <= -1; RFin <= 0;
             PCin <= 1; Gra <= 1; Rout <= 1;
         end
 			
