@@ -1,20 +1,21 @@
 `timescale 1ns/10ps
 module controlUnit (
 	input wire clock, reset, stop, 
-	input wire [31:0]IR, 
+	input wire [31:0]IR,
+	input wire branch,
 	output reg [4:0]ALUControl, // send opcodes to configure the alu operations
 	output reg start,
 	
 	// cpu control signals 
-	output reg clear, read, write,
+	output reg read, write, clear, 
 	output reg incPC,
 	output reg Gra, Grb, Grc, Rin, Rout, BAout, Conffin, // for instruction operations 
 	output reg RLOout, RHIout, RZLOout, RZHIout, PCout, MDRout, Immout, InPortout,
-	output reg RLOin, RHIin, PCin, branch, IRin, RYin, RZin, MDRin, MARin, OutPortin, 
+	output reg RLOin, RHIin, PCin, IRin, RYin, RZin, MDRin, MARin, OutPortin 
 	
 	// for the register file
-	output reg RFin, RFout, 
-	output reg [3:0]RFSelect
+//	output reg RFin, RFout, 
+//	output reg [3:0]RFSelect
 );
 
 parameter reset_state = 8'h00, 
@@ -158,13 +159,13 @@ begin
 always @(present_state) 
 begin
 	// deassert all the signals at the beginning of each state change
-	clear <= 0; read <= 0; write <= 0;
+	read <= 0; write <= 0; clear <= 0;
 	incPC <= 0; 
 	Gra <= 0; Grb <= 0; Grc <= 0; Rin <= 0; Rout <= 0; BAout <= 0; Conffin <= 0;
 	RLOout <= 0; RHIout <= 0; RZLOout <= 0; RZHIout <=0 ; PCout <= 0; MDRout <= 0; Immout <= 0; InPortout <= 0;
 	RLOin <= 0; RHIin <= 0; PCin <= 0; IRin <= 0; RYin <= 0; RZin <= 0; MDRin <= 0; MARin <= 0; OutPortin <= 0;
-	RFin <= 0; RFout <= 0;
-	RFSelect <= -1;
+	
+	
 	ALUControl <= 5'b00000;
 	start <= 0;
 	// branch <= 0; do not reassert branch at every state only set it to 0 on reset might need to update this 
@@ -173,7 +174,17 @@ begin
 	case(present_state) 
 	
 	reset_state: begin 
-			clear <= 1;
+		read <= 0; write <= 0;
+		incPC <= 0; 
+		Gra <= 0; Grb <= 0; Grc <= 0; Rin <= 0; Rout <= 0; BAout <= 0; Conffin <= 0;
+		RLOout <= 0; RHIout <= 0; RZLOout <= 0; RZHIout <=0 ; PCout <= 0; MDRout <= 0; Immout <= 0; InPortout <= 0;
+		RLOin <= 0; RHIin <= 0; PCin <= 0; IRin <= 0; RYin <= 0; RZin <= 0; MDRin <= 0; MARin <= 0; OutPortin <= 0;
+		
+		
+		ALUControl <= 5'b00000;
+		start <= 0;
+		clear <= 1;
+			
 		end
 		
 	// fetching stage
@@ -304,12 +315,12 @@ begin
 	end
 	
 	// jump and link instruction
-	jal0: begin // store PC in R15
-		PCout <= 1; RFSelect <= 15; RFin <= 1; 
-	end
-	jal1: begin // ld Ra into PC
-		PCin <= 1; Gra <= 1; Rout <= 1; 
-	end
+//	jal0: begin // store PC in R15
+//		PCout <= 1; RFSelect <= 15; RFin <= 1; 
+//	end
+//	jal1: begin // ld Ra into PC
+//		PCin <= 1; Gra <= 1; Rout <= 1; 
+//	end
 	
 	// io port instructions
 	inputPort0: begin
