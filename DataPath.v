@@ -35,7 +35,7 @@ controlUnit control(
     start,
     read, write, clear,
     IncPC, 
-    Gra, Grb, Grc, Rout, Rin, BAout, conffin,
+    Gra, Grb, Grc, Rin, Rout, BAout, conffin,
     RLOout, RHIout, RZLOout, RZHIout, PCout, MDRout, Immout, Inportout, 
     RLOin, RHIin, PCin, IRin, RYin, RZin, MDRin, MARin, OutportIn
 );
