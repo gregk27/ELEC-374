@@ -18,50 +18,50 @@ module controlUnit (
 );
 
 parameter reset_state = 8'h00, 
-Inst_fetch0 = 8'h01, Inst_fetch1 = 8'h02, Inst_fetch2 = 8'h02,  // move the instruction into the IR
+Inst_fetch0 = 8'h01, Inst_fetch1 = 8'h02, Inst_fetch2 = 8'h03, Inst_fetch3 = 8'h2E,  // move the instruction into the IR
 // ld instruction
-ld0 = 8'h03, ld1 = 8'h04, ld2 = 8'h05, ld3 = 8'h06, ld4 = 8'h07,
+ld0 = 8'h04, ld1 = 8'h05, ld2 = 8'h06, ld3 = 8'h07, ld4 = 8'h08,
 
 // ldi instruction
-ldi0 = 8'h08, ldi1 = 8'h09, ldi2 = 8'h0A,
+ldi0 = 8'h09, ldi1 = 8'h0A, ldi2 = 8'h0B,
 
 // st instruction
-st0 = 8'h0B, st1 = 8'h0C, st2 = 8'h0D, st3 = 8'h0E, st4 = 8'h0F,
+st0 = 8'h0C, st1 = 8'h0D, st2 = 8'h0E, st3 = 8'h0F, st4 = 8'h10,
 
 // alu with 2 reg operators 
-alu_2_reg0 = 8'h10, alu_2_reg1 = 8'h11, alu_2_reg2 = 8'h11,
+alu_2_reg0 = 8'h11, alu_2_reg1 = 8'h12, alu_2_reg2 = 8'h13,
 
 // alu with immediate operator 
-alu_imm0 = 8'h12, alu_imm1 = 8'h13, alu_imm2 = 8'h14,
+alu_imm0 = 8'h14, alu_imm1 = 8'h15, alu_imm2 = 8'h16,
 
 // alu for multiplying or dividing
-alu_mul_div0 = 8'h15, alu_mul_div1 = 8'h16, alu_mul_div2 = 8'h17, alu_mul_div3 = 8'h18,
+alu_mul_div0 = 8'h17, alu_mul_div1 = 8'h18, alu_mul_div2 = 8'h19, alu_mul_div3 = 8'h1A,
 
 // alu for negation and not ops
-alu_n0 = 8'h19, alu_n1 = 8'h1A,
+alu_n0 = 8'h1B, alu_n1 = 8'h1C,
 
 // branching 
-br0 = 8'h1B, br1 = 8'h1C, br2 = 8'h1D, br3 = 8'h1E,
+br0 = 8'h1D, br1 = 8'h1E, br2 = 8'h1F, br3 = 8'h20,
 
 //jump return instruction
-jr0 = 8'h1F, 
+jr0 = 8'h21, 
 
 // jump and link
-jal0 = 8'h20, jal1 = 8'h21, 
+jal0 = 8'h22, jal1 = 8'h23, 
 
 // io port instructions
-inputPort0 = 8'h22,
-outPort0 = 8'h23,
+inputPort0 = 8'h24,
+outPort0 = 8'h25,
 
 // move from RZ HI and LO instructions
-mfhi0 = 8'h24,
-mflo0 = 8'h25,
+mfhi0 = 8'h26,
+mflo0 = 8'h27,
 
 // nop and halt
 
-nop0 = 8'h26, nop1 = 8'h27, nop2 = 8'h28, nop3 = 8'h29, nop4 = 8'h2A,
+nop0 = 8'h28, nop1 = 8'h29, nop2 = 8'h2A, nop3 = 8'h2B, nop4 = 8'h2C,
 
-halt = 8'h2B;
+halt = 8'h2D;
 
 reg [7:0]present_state = reset_state;
 
@@ -75,7 +75,8 @@ begin
 				reset_state: present_state = Inst_fetch0;
 				Inst_fetch0: present_state = Inst_fetch1;
 				Inst_fetch1: present_state = Inst_fetch2;
-				Inst_fetch2: begin
+				Inst_fetch2: present_state = Inst_fetch3;
+				Inst_fetch3: begin
 				case(IR[31:27])
 					5'b00000: present_state = ld0;
 					5'b00001: present_state = ldi0;
@@ -173,17 +174,7 @@ begin
 	case(present_state) 
 	
 	reset_state: begin 
-		read <= 0; write <= 0;
-		incPC <= 0; 
-		Gra <= 0; Grb <= 0; Grc <= 0; Rin <= 0; Rout <= 0; BAout <= 0; Conffin <= 0;
-		RLOout <= 0; RHIout <= 0; RZLOout <= 0; RZHIout <=0 ; PCout <= 0; MDRout <= 0; Immout <= 0; InPortout <= 0;
-		RLOin <= 0; RHIin <= 0; PCin <= 0; IRin <= 0; RYin <= 0; RZin <= 0; MDRin <= 0; MARin <= 0; OutPortin <= 0;
-		
-		
-		ALUControl <= 5'b00000;
-		start <= 0;
 		clear <= 1;
-			
 		end
 		
 	// fetching stage
