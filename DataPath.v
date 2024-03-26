@@ -35,7 +35,7 @@ controlUnit control(
     start,
     read, write, clear,
     IncPC, 
-    Gra, Grb, Grc, Rout, Rin, BAout, conffin,
+    Gra, Grb, Grc, Rin, Rout, BAout, conffin,
     RLOout, RHIout, RZLOout, RZHIout, PCout, MDRout, Immout, Inportout, 
     RLOin, RHIin, PCin, IRin, RYin, RZin, MDRin, MARin, OutportIn
 );
@@ -73,10 +73,6 @@ assign BusMuxInRZ = RZLOout ? RZ_out[31:0] :
 						  RZHIout ? RZ_out[62:32] :
 						  {32{1'dX}};
 						  
-// IO Ports
-register outport(clear, clock, OutportIn, BusMuxOut, device_out);
-register inport(clear, clock, device_strobe, device_in, BusMuxInInport);
-
 // IO Ports
 register outport(clear, clock, OutportIn, BusMuxOut, device_out);
 register inport(clear, clock, device_strobe, device_in, BusMuxInInport);
