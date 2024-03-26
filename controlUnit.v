@@ -1,4 +1,3 @@
-`timescale 1ns/10ps
 module controlUnit (
 	input wire clock, reset, stop, 
 	input wire [31:0]IR,
