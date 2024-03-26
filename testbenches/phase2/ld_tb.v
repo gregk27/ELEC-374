@@ -48,7 +48,7 @@ DataPath DP(
    Read, MDRin, MDRout, Write, memFinished,
    // Control signals
    BAout, Gra, Grb, Grc, Rout, Rin, IncPC,
-   branch
+   branch,
    // IO
    device_strobe, device_in, device_out
 );

@@ -37,7 +37,7 @@ reg [3:0] Present_state = Default;
 DataPath DP(
 	Clock, clear,
 	RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout, Inportout,
-	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, CONFFin,	OutportIn,	
+	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, CONFFin, OutportIn,	
 	RFSelect,
     // TODO: Remove these signals
 	tbIn, BusMuxInTB,
@@ -48,7 +48,7 @@ DataPath DP(
    Read, MDRin, MDRout, Write, memFinished,
    // Control signals
    BAout, Gra, Grb, Grc, Rout, Rin, IncPC,
-   branch
+   branch,
    // IO
    device_strobe, device_in, device_out
 );
