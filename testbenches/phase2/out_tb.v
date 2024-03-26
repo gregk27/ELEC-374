@@ -1,43 +1,43 @@
 // and datapath_tb.v file: <This is the filename>
 `timescale 1ns/10ps
-module ldi_tb();
+module out_tb();
 
 reg Clock, clear, tbIn;
 // Bus input selection lines (device output -> bus input)
 reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout, Inportout;
 // Register write enable lines
-reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, CONFFin;
+reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin;
 // Register file selection line
-reg [4:0]RFSelect;
+reg [3:0]RFSelect;
 
 reg [31:0] BusMuxInTB;
 
 // ALU
 reg start;
-wire finished, memFinished, branch;
+wire finished, memFinished;
 reg [5:0]opSelect;
 // Memory
 reg Read, Write, MDRin, MDRout;
 
 reg BAout, Gra, Grb, Grc, Rout, Rin;
 
+reg IncPC;
+
 // IO
 reg device_strobe, OutportIn;
 reg [31:0]device_in;
 wire [31:0]device_out;
 
-reg IncPC;
-
 parameter Default = 4'b0000, Reg_load1a = 4'b0001, Reg_load1b = 4'b0010, Reg_load2a = 4'b0011,
     Reg_load2b = 4'b0100, Reg_load3a = 4'b0101, Reg_load3b = 4'b0110, T0 = 4'b0111,
-    T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010, T4 = 4'b1011, T5 = 4'b1100;
+    T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010;
 
 reg [3:0] Present_state = Default;
 
 DataPath DP(
 	Clock, clear,
 	RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout, Inportout,
-	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, CONFFin,	OutportIn,	
+	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, OutportIn,	
 	RFSelect,
     // TODO: Remove these signals
 	tbIn, BusMuxInTB,
@@ -48,7 +48,6 @@ DataPath DP(
    Read, MDRin, MDRout, Write, memFinished,
    // Control signals
    BAout, Gra, Grb, Grc, Rout, Rin, IncPC,
-   branch
    // IO
    device_strobe, device_in, device_out
 );
@@ -78,8 +77,6 @@ begin
 			  T0 : Present_state = T1;
 			  T1 : Present_state = T2;
 			  T2 : Present_state = T3;
-			  T3 : Present_state = T4;
-			  T4 : Present_state = T5;
 		 endcase
 	 end
 end
@@ -98,16 +95,16 @@ begin
         end
         Reg_load1a: begin
             // Set PC to the start of the test memory
-            BusMuxInTB <= 32'h23 - 1;
+            BusMuxInTB <= 32'h30 - 1;
             tbIn <= 1; PCin <= 1;
         end
         Reg_load1b: begin
             tbIn <= 0; PCin <= 0;
         end
         Reg_load2a: begin
-            // Place 2 into R2
-            BusMuxInTB <= 2;
-            RFSelect <= 2; RFin <= 1;
+            // Place sample data into R4
+            BusMuxInTB <= 32'hABCDEF01;
+            RFSelect <= 3; RFin <= 1;
             tbIn <= 1;
         end
         Reg_load2b: begin 
@@ -131,18 +128,7 @@ begin
         end
         T3: begin
             MDRout <= 0; IRin <= 0; Rout <= 1;
-            Grb <= 1; BAout <= 1; RYin <= 1;
-        end
-        T4: begin
-            Grb <= 0; BAout <= 0; RYin <= 0; Rout <= 0; Immout <= 1;
-            opSelect <= 5'b00100;
-            RZin <= 1; start <= 1;
-            #10 start <= 0;
-        end
-        T5: begin
-            #20
-            RZin <= 0; Immout <= 0; 
-            RZLOout <= 1; Gra <= 1; Rin <= 1;
+            Gra <= 1; OutportIn <= 1;
         end
     endcase
 	holdState = 0;

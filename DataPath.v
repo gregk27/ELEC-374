@@ -1,9 +1,9 @@
 module DataPath(
 	input wire clock, clear,
 	// Bus input selection lines (device output -> bus input)
-	input wire RFout_TB, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout,
+	input wire RFout_TB, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout, Inportout,
 	// Register write enable lines
-	input wire RFin_TB, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, conffin,//enable wire for the conff logic
+	input wire RFin_TB, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, conffin, OutportIn,//enable wire for the conff logic
 	// Register file index to use, if RFin or RFout are high
 	// Use 5 bits so that high bit can be flag
 	input wire [4:0]RFselect_TB,
@@ -22,10 +22,15 @@ module DataPath(
 	
 	input wire BAout, Gra, Grb, Grc, Rout, Rin, IncPC,
 	output wire branch // indicates if we need to branch or not for conff
+
+	// IO
+	input wire device_strobe,
+	input wire [31:0]device_in,
+	output wire [31:0]device_out
 );
 
 // Connections from device output to bus input
-wire [31:0]BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR, BusMuxInImm;
+wire [31:0]BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR, BusMuxInImm, BusMuxInInport;
 
 
 
@@ -70,12 +75,16 @@ assign BusMuxInRZ = RZLOout ? RZ_out[31:0] :
 						  RZHIout ? RZ_out[62:32] :
 						  {32{1'dX}};
 
+// IO Ports
+register outport(clear, clock, OutportIn, BusMuxOut, device_out);
+register inport(clear, clock, device_strobe, device_in, BusMuxInInport);
+
 //Bus
 Bus bus(
 	// Data In
-	BusMuxInTB, BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR, BusMuxInImm,
+	BusMuxInTB, BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR, BusMuxInImm, BusMuxInInport,
 	// Select signals
-	TBout, RFout | RFout_TB, PCout, IRout, RYout, RZLOout | RZHIout, MARout, RHIout, RLOout, MDRout, Immout,
+	TBout, RFout | RFout_TB, PCout, IRout, RYout, RZLOout | RZHIout, MARout, RHIout, RLOout, MDRout, Immout, Inportout,
 	// Out	
 	BusMuxOut);
 
