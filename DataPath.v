@@ -21,7 +21,7 @@ module DataPath(
 	output wire memFinished, 
 	
 	input wire BAout, Gra, Grb, Grc, Rout, Rin, IncPC,
-	output wire branch // indicates if we need to branch or not for conff
+	output wire branch, // indicates if we need to branch or not for conff
 
 	// IO
 	input wire device_strobe,

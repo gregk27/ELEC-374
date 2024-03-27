@@ -4,11 +4,11 @@ module out_tb();
 
 reg Clock, clear, tbIn;
 // Bus input selection lines (device output -> bus input)
-reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout, Inportout;
+reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout;
 // Register write enable lines
 reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin;
 // Register file selection line
-reg [3:0]RFSelect;
+reg [4:0]RFSelect;
 
 reg [31:0] BusMuxInTB;
 
@@ -27,11 +27,6 @@ reg [31:0]device_in;
 wire [31:0]device_out;
 
 reg IncPC;
-
-// IO
-reg device_strobe, OutportIn;
-reg [31:0]device_in;
-wire [31:0]device_out;
 
 parameter Default = 4'b0000, Reg_load1a = 4'b0001, Reg_load1b = 4'b0010, Reg_load2a = 4'b0011,
     Reg_load2b = 4'b0100, Reg_load3a = 4'b0101, Reg_load3b = 4'b0110, T0 = 4'b0111,
@@ -108,7 +103,7 @@ begin
             tbIn <= 0; PCin <= 0;
         end
         Reg_load2a: begin
-            // Place sample data into R4
+            // Place sample data into R3
             BusMuxInTB <= 32'hABCDEF01;
             RFSelect <= 3; RFin <= 1;
             tbIn <= 1;
