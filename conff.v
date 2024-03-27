@@ -28,7 +28,7 @@ BusMuxInIR = IR[20:19];
                 
                 2'b01:begin
                     if(BusMuxIn != 32'b0)begin
-                        temp2 <= 1;
+                        temp <= 1;
                     end
                     end
                 
