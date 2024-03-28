@@ -11,10 +11,12 @@ add wave -hex sim:/$tbName/DP/PC/q
 add wave -hex sim:/$tbName/DP/IR/q
 add wave sim:/$tbName/DP/IRin
 add wave -hex sim:/$tbName/DP/BusMuxOut
+add wave -hex sim:/$tbName/DP/RHI/q
+add wave -hex sim:/$tbName/DP/RLO/q
 
 # This is black magic, don't look too closely
 # You can set the registers desired here
-set registers { 1 2 3 4 5 6 7 8 9 10 11 12 13 }
+set registers { 0 1 2 3 4 5 6 7 8 9 10 11 12 13 }
 foreach reg $registers {
     set path sim:/$tbName/DP/RF/registers
     append path {[}
@@ -24,7 +26,7 @@ foreach reg $registers {
 }
 
 # You can set the registers desired here
-set addrs { 52 55 142 148 }
+set addrs { 71 142 }
 foreach addr $addrs {
     set path sim:/$tbName/DP/memory/ram/mem
     append path {[}
@@ -34,7 +36,8 @@ foreach addr $addrs {
 }
 
 restart -f
-run 500 ns
+# Run for 10 cycles
+run 1400 ns
 
 configure wave -namecolwidth 250
 wave zoom full
