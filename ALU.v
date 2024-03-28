@@ -1,3 +1,6 @@
+// Needed to add delay when setting up
+// Will need a better system for phase 4
+`timescale 1ns/10ps
 module ALU(
 	input wire clock,
 	input wire [5:0] opSelect,
@@ -77,8 +80,9 @@ always @(clock, adder_out, mul_finished, div_finished) begin
 				adder_mux_A <= opSelect[1] ? 0 : A;
 				adder_mux_B <= opSelect[1] ? A : B;
 			end
-			MUL: mul_start <= 1;
-			DIV: div_start <= 1;
+			// Delay slightly to let the algo start
+			MUL: begin mul_start <= 1; #1; end
+			DIV: begin div_start <= 1; #1; end
 			SHL, SHR, ROL, ROR, SHRA, SHLA: begin
 				// Right flat in bit 0
 				shift_right <= opSelect[0];

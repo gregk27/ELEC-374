@@ -103,53 +103,9 @@ set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name VERILOG_MACRO QUARTUS
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME addi_tb -section_id Phase2
 
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/RAM_tb.v -section_id RAM
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/MemSys_tb.v -section_id MemSys
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/and_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/and_tb.v.bak -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/debug.do -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo.do -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_add_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_div_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_mul_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_or_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_rol_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_ror_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shl_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shr_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shra_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_sub_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/neg_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/not_tb.v -section_id "Phase 1"
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/adder_tb.v -section_id adder
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/ALU_tb.v -section_id ALU
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/divider_tb.v -section_id divider
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/multiplier_tb.v -section_id multiplier
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/RegFile_tb.v -section_id RegFile
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/shifter_tb.v -section_id shifter
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/addi_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/andi_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/conffBRMI_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/conffBRPL_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/conffNZB_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/conffZB_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/jal_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/jr_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/ori_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/ldi_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/ld_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/st_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/ld_offset_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/ldi_offset_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/mem.do -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/st_offset_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/branch.do -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/imm.do -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/in_tb.v -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/out.do -section_id Phase2
-set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/out_tb.v -section_id Phase2
+set_global_assignment -name VERILOG_FILE testbenches/phase2/mflo_tb.v
+set_global_assignment -name VERILOG_FILE testbenches/phase2/mfhi_tb.v
 set_global_assignment -name VERILOG_FILE testbenches/phase2/in_tb.v
 set_global_assignment -name VERILOG_FILE testbenches/phase2/ldi_offset_tb.v
 set_global_assignment -name VERILOG_FILE testbenches/phase2/ld_offset_tb.v
@@ -204,3 +160,53 @@ set_global_assignment -name VERILOG_FILE Bus.v
 set_global_assignment -name VERILOG_FILE adder.v
 set_global_assignment -name VERILOG_FILE register.v
 set_global_assignment -name VERILOG_FILE DataPath.v
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/RAM_tb.v -section_id RAM
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/MemSys_tb.v -section_id MemSys
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/and_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/and_tb.v.bak -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/debug.do -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo.do -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_add_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_div_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_mul_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_or_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_rol_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_ror_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shl_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shr_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_shra_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/demo_sub_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/neg_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase1/not_tb.v -section_id "Phase 1"
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/adder_tb.v -section_id adder
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/ALU_tb.v -section_id ALU
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/divider_tb.v -section_id divider
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/multiplier_tb.v -section_id multiplier
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/RegFile_tb.v -section_id RegFile
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/shifter_tb.v -section_id shifter
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/addi_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/andi_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/conffBRMI_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/conffBRPL_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/conffNZB_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/conffZB_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/jal_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/jr_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/ori_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/ldi_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/ld_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/st_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/ld_offset_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/ldi_offset_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/mem.do -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/st_offset_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/branch.do -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/imm.do -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/in_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/out_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/io.do -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/jump.do -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/mf.do -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/mfhi_tb.v -section_id Phase2
+set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase2/mflo_tb.v -section_id Phase2
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
