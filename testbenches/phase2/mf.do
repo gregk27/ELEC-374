@@ -31,3 +31,4 @@ restart -f
 run 600 ns
 
 wave zoom full
+configure wave -namecolwidth 210

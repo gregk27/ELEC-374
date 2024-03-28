@@ -40,3 +40,4 @@ foreach reg $registers {
 run 200 ns
 
 wave zoom full
+configure wave -namecolwidth 210
