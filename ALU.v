@@ -3,7 +3,7 @@
 `timescale 1ns/10ps
 module ALU(
 	input wire clock,
-	input wire [5:0] opSelect,
+	input wire [4:0] opSelect,
 	input wire [31:0] A,
 	input wire [31:0] B,
 	input wire start,
