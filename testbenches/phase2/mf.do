@@ -15,6 +15,9 @@ add wave -hex sim:/$1/DP/BusMuxOut
 add wave sim:/$1/finished
 add wave -hex sim:/$1/DP/RZ/q
 
+add wave -hex sim:/$1/DP/RHI/q
+add wave -hex sim:/$1/DP/RLO/q
+
 # This is black magic, don't look too closely
 # You can set the registers desired here
 set registers { 6 7 }
@@ -28,7 +31,7 @@ foreach reg $registers {
 
 
 restart -f
-run 600 ns
+run 650 ns
 
 wave zoom full
 configure wave -namecolwidth 210

@@ -139,7 +139,15 @@ begin
         end
         T3: begin
             MDRout <= 0; IRin <= 0; Rin <= 1;
-            Gra <= 1; RZLOout <= 1;
+            RZHIout <= 1; RHIin <= 1;
+        end
+        T4: begin 
+            RZHIout <= 0; RHIin <= 0;
+            RZLOout <= 1; RLOin <= 1;
+        end
+        T5: begin
+            RZLOout <= 0; RLOin <= 0;
+            Gra <= 1; RLOout <= 1;
         end
     endcase
 	holdState = 0;
