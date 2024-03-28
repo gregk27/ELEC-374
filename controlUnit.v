@@ -296,7 +296,10 @@ begin
 		Immout <= 1; ALUControl <= 5'b00100; RZin <= 1; start <= 1;
 	end
 	br3: begin
-		if(branch)RZLOout <= 1; PCin <= 1;
+		if(branch) begin 
+			RZLOout <= 1;
+			PCin <= 1;
+		end
 	end 
 	
 	// jump instruction
