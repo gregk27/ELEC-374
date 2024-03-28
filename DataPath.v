@@ -47,7 +47,7 @@ wire [3:0]RFselect;
 // Registers
 // Internal selection is testbench override if positive, otherwise generated from opcode
 wire [3:0]_rfSelect = RFselect_TB[4] ? RFselect[3:0] : RFselect_TB;
-RegFile RF(clock, clear, RFin | RFin_TB, _rfSelect, BusMuxOut, BusMuxInRF);
+RegFile RF(clock, clear, RFin | RFin_TB, BAout, _rfSelect, BusMuxOut, BusMuxInRF);
 Select SE(BusMuxInIR, BAout, Gra, Grb, Grc, Rout, Rin, BusMuxInImm, RFin, RFout, RFselect);
 
 // Control
