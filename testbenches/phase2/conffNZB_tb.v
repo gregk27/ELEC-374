@@ -1,12 +1,12 @@
 // and datapath_tb.v file: <This is the filename>
 `timescale 1ns/10ps
-module demo_div_tb();
+module conffNZB_tb();
 
 reg Clock, clear, tbIn;
 // Bus input selection lines (device output -> bus input)
-reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout;
+reg RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout;
 // Register write enable lines
-reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin;
+reg RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, conffin;
 // Register file selection line
 reg [4:0]RFSelect;
 
@@ -14,13 +14,21 @@ reg [31:0] BusMuxInTB;
 
 // ALU
 reg start;
-wire finished;
+wire finished, memFinished;
 reg [5:0]opSelect;
 // Memory
-reg Read, MDRin, MDRout;
-reg [31:0]Mdatain;
+reg Read, Write, MDRin, MDRout;
 
-reg IncPC; // Unused for now
+reg BAout, Gra, Grb, Grc, Rout, Rin;
+
+// IO
+reg device_strobe, OutportIn, Inportout;
+reg [31:0]device_in;
+wire [31:0]device_out;
+
+reg IncPC;
+// for conff
+wire branch;
 
 parameter Default = 4'b0000, Reg_load1a = 4'b0001, Reg_load1b = 4'b0010, Reg_load2a = 4'b0011,
     Reg_load2b = 4'b0100, Reg_load3a = 4'b0101, Reg_load3b = 4'b0110, T0 = 4'b0111,
@@ -30,8 +38,8 @@ reg [3:0] Present_state = Default;
 
 DataPath DP(
 	Clock, clear,
-	RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout,
-	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin,	
+	RFout, PCout, IRout, RYout, RZLOout, RZHIout, MARout, RHIout, RLOout, Immout, Inportout,
+	RFin, PCin, IRin, RYin, RZin, MARin, RHIin, RLOin, conffin, OutportIn,	
 	RFSelect,
     // TODO: Remove these signals
 	tbIn, BusMuxInTB,
@@ -39,7 +47,12 @@ DataPath DP(
    //alu signals
    opSelect, start, finished,
    // Data Signals
-   Read, MDRin, MDRout, Mdatain
+   Read, MDRin, MDRout, Write, memFinished,
+   // Control signals
+   BAout, Gra, Grb, Grc, Rout, Rin, IncPC,
+   branch,
+   // IO
+   device_strobe, device_in, device_out
 );
 
 // Flag to pervent state transition while a waiting for a delay
@@ -66,76 +79,78 @@ begin
 			  T2 : Present_state = T3;
 			  T3 : Present_state = T4;
 			  T4 : Present_state = T5;
-              T5 : Present_state = T6;
+			  T5 : Present_state = T6;
 		 endcase
 	 end
 end
 
-always @(Present_state) // do the required job in each state
+always @(Present_state) // load R5 with 0
 begin
-	 holdState = 1;
+	holdState = 1;
     case (Present_state) // assert the required signals in each clock cycle
         Default: begin
             PCout <= 0; RZLOout <= 0; MDRout <= 0; // initialize the signals
             RFout <= 0; MARin <= 0; RZin <= 0;
             PCin <=0; MDRin <= 0; IRin <= 0; RYin <= 0;
             IncPC <= 0; Read <= 0; opSelect <= 0;
-            RFin <= 0; Mdatain <= 32'h00000000;
+            RFin <= 0;
+            Gra <= 0; Grb <= 0; Grc <= 0; BAout <= 0; Rin <= 0; Rout <= 0; Immout <= 0; conffin <= 0;
         end
         Reg_load1a: begin
-            Mdatain <= 32'd64;
-            Read = 0; MDRin = 0; // the first zero is there for completeness
-            #10 Read <= 1; MDRin <= 1;
-            #15 Read <= 0; MDRin <= 0;
+            // Set PC to the start of the test memory
+            BusMuxInTB <= 32'd26 - 1;
+            tbIn <= 1; PCin <= 1;
         end
         Reg_load1b: begin
-            #5  RFSelect <= 4;
-            #5  MDRout <= 1; RFin <= 1;
-            #15 MDRout <= 0; RFin <= 0; // initialize R4 with the value $0x1000000F
+            tbIn <= 0; PCin <= 0;
         end
         Reg_load2a: begin
-            Mdatain <= 32'd5;
-            #10 Read <= 1; MDRin <= 1;
-            #15 Read <= 0; MDRin <= 0;
+            // Place 1 into R5
+            BusMuxInTB <= {31'b0, 1'b1};
+            RFSelect <= 5; RFin <= 1;
+            tbIn <= 1;
         end
-        Reg_load2b: begin
-            #5  RFSelect <= 5;
-            #5  MDRout <= 1; RFin <= 1;
-            #15 MDRout <= 0; RFin <= 0; // initialize R3 with the value $0x20
+        Reg_load2b: begin 
+            RFin <= 0; RFSelect <= -1;
+            tbIn <= 0;
         end
         T0: begin // see if you need to de-assert these signals
-            PCout <= 0; MARin <= 0; IncPC <= 0; RZin <= 0;
+            tbIn <= 0;
+            PCout <= 0; MARin <= 0; IncPC <= 1; RZin <= 0; conffin <= 0;
+            Write <= 0; RZLOout <= 0;
         end
         T1: begin
-            RZLOout <= 0; PCin <= 1; Read <= 1; MDRin <= 1;
-            Mdatain <= 32'h82280000; // opcode for "div r4, r5"
+            // Send PC to MAR, begin read
+            PCout <= 1; IncPC <= 0;
+            MARin <= 1; Read <= 1; MDRin <= 1;
         end
         T2: begin
-            MDRout <= 1; IRin <= 1;
-            #10 MDRout <= 0;
+            // Pass data to instruction register
+            PCout <= 0; MARin <= 0;
+            MDRout <= 1; 
+            #5 IRin <= 1;
         end
         T3: begin
-            IRin <= 0;
-            RFSelect <= 4;
-            RFout <= 1; RYin <= 1;
+            MDRout <= 0; IRin <= 0; IncPC <= 1; Rout <= 1;
+            Gra <= 1; conffin <= 1;
         end
         T4: begin
-            RYin <= 0;
-            RFSelect <= 5;
-            RFout <= 1; opSelect <= 5'b01001; RZin <= 1;
-            start <= 1;
-            #15 start <= 0;
-            // Wait for calculation to finish before saving result
-            @(finished) #15 RZin <= 0;
+            Gra <= 0; Rout <= 0; conffin <= 0; IncPC <= 0;
+				PCout <= 1; RYin <= 1;
         end
         T5: begin
-            RZLOout <= 1; RLOin <= 1;
-            expectedValue <= 32'd12;
-            #20 RZLOout <= 0; RLOin <= 0;
+				PCout <= 0; RYin <= 0; Immout <= 1; 
+				opSelect <= 5'b00100;
+            RZin <= 1; start <= 1;
+            #10 start <= 0;
         end
-        T6: begin
-            RZHIout <= 1; RHIin <= 1;
-            expectedValue <= 32'd4;
+		  T6: begin
+				Immout <= 0; RZin <= 0;
+				if(branch)begin
+				RZLOout <= 1; PCin <= 1;
+				#20 
+				RZLOout <= 0; PCin <= 0;
+				end
         end
     endcase
 	holdState = 0;

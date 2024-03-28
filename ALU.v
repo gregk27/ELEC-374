@@ -1,3 +1,6 @@
+// Needed to add delay when setting up
+// Will need a better system for phase 4
+`timescale 1ns/10ps
 module ALU(
 	input wire clock,
 	input wire [5:0] opSelect,
@@ -54,10 +57,15 @@ wire div_finished;
 wire [31:0] quotient, remainder;
 divider div(clock, div_start, A, bCache, quotient, remainder, div_finished);
 
+reg canFinish;
+
 // Run on negedge clock to have values ready by the positive edge
-always @(negedge clock) begin
+// NOTE: This breaks the finished signal, for now the ALU is clocked only
+always @(clock, adder_out, mul_finished, div_finished) begin
+	// NOTE: This breaks the finished signal, for now the ALU is clocked only
+	canFinish = 1;
 	// If start is asserted, clear finished flag and begin setup this cycle
-	if(start) begin
+	if(start && !clock) begin
 		bCache <= B;
 		finished = 0;
 		// First run setup to configure the inputs and outputs to perform the calculation
@@ -72,8 +80,9 @@ always @(negedge clock) begin
 				adder_mux_A <= opSelect[1] ? 0 : A;
 				adder_mux_B <= opSelect[1] ? A : B;
 			end
-			MUL: mul_start <= 1;
-			DIV: div_start <= 1;
+			// Delay slightly to let the algo start
+			MUL: begin mul_start <= 1; #1; end
+			DIV: begin div_start <= 1; #1; end
 			SHL, SHR, ROL, ROR, SHRA, SHLA: begin
 				// Right flat in bit 0
 				shift_right <= opSelect[0];
@@ -84,7 +93,7 @@ always @(negedge clock) begin
 			end
 		endcase
 	end
-	else begin
+	if (canFinish) begin
 		// Once setup is complete, monitor outputs for completion (if applicable)
 		case (opSelect)
 			ADD, SUB, NEG: begin
