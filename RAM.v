@@ -15,7 +15,7 @@ reg [31:0]_data;
 // Send value if read is high, otherwise HiZ to get incoming data
 assign data = read ? _data : 'bz;
 
-initial $readmemh("RAM_empty.ram", mem);
+initial $readmemh("ram.ram", mem);
 
 // For much faster preformance, can include read and write
 // Quartus compiler requires only posedge for readmemh, modelsim doesn't care

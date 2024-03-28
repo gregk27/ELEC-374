@@ -1,5 +1,5 @@
 `timescale 1ns/10ps
-module datapath_tb();
+module phase3_tb();
 
 reg clock, reset, stop;
 
@@ -7,7 +7,7 @@ parameter Default = 5'b00000, T0 = 5'b00001, T1 = 5'b00010, T2 = 5'b00011, T3 = 
 
 reg[4:0] present_state = Default;
 
-DataPath path(clock, reset, stop);
+DataPath DP(clock, reset, stop);
 
 initial begin clock = 0;  end
 always #10 clock = ~clock;
