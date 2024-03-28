@@ -6,7 +6,7 @@ module conff(
 ); 
 
 
-reg temp2, temp3;
+reg temp, temp2;
 reg [1:0] BusMuxInIR; 
 integer i;
 
@@ -20,27 +20,27 @@ BusMuxInIR = IR[20:19];
     case(BusMuxInIR)
             2'b00:begin
                     if(BusMuxIn == 32'b0)begin
-                        temp2 <= 1;
+                        temp <= 1;
                     end
                     else
-                    temp2 <= 0;
+                    temp <= 0;
                     end
                 
                 2'b01:begin
                     if(BusMuxIn != 32'b0)begin
-                        temp2 <= 1;
+                        temp <= 1;
                     end
                     end
                 
                 2'b10:begin
                     if(BusMuxIn[31] == 1'b0)begin
-                        temp2 <= 1;
+                        temp <= 1;
                     end
                     end
                 
                 2'b11:begin
                     if(BusMuxIn[31] == 1'b1)begin
-                        temp2 <= 1;
+                        temp <= 1;
                     end
                     end
             
@@ -49,10 +49,10 @@ BusMuxInIR = IR[20:19];
     end
     
 always @ (ConIn) begin
-	temp3 <= temp2;
+	temp2 <= temp;
 end
 	
-	assign branch = temp3;
+	assign branch = temp2;
 
 
 
