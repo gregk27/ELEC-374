@@ -278,11 +278,11 @@ begin
 	
 	// mul and div instructions (have to get lo and hi bits out of RZ)
 	
-	alu_mul_div0: begin // put Rb into RY
-		Grb <= 1; Rout <= 1; RYin <= 1; 
+	alu_mul_div0: begin // put Ra into RY
+		Gra <= 1; Rout <= 1; RYin <= 1; 
 	end
-	alu_mul_div1: begin // put Ra into the ALU
-		Gra <= 1; Rout <= 1; ALUControl <= IR[31:27]; start <= 1;		
+	alu_mul_div1: begin // put Rb into the ALU
+		Grb <= 1; Rout <= 1; ALUControl <= IR[31:27]; start <= 1;		
 	end
 	alu_mul_div_wait: begin // Ilde state to wait for the calculation to finish
 		RZin <= 1;
