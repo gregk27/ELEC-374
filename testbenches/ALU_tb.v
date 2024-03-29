@@ -71,7 +71,7 @@ always @(present_state) begin
 	case(present_state)
 		T_NOT: begin
 			opSelect <= NOT;
-			A <= {32{1'b1}}; B <= 0;
+			A <= 0; B <= {32{1'b1}};
 			expectedOut <= 0;
 			// Assert start until negedge passed
 			#1 start <= 1;
@@ -112,7 +112,7 @@ always @(present_state) begin
 		end
 		T_NEG: begin
 			opSelect <= NEG;
-			A <= 15; B <= 25;
+			A <= 25; B <= 15;
 			expectedOut <= -15;
 			// Assert start until negedge passed
 			#1 start <= 1;

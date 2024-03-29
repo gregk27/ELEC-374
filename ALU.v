@@ -94,7 +94,7 @@ always @(clock, adder_out, mul_finished, div_finished) begin
 		finished = 0;
 		// First run setup to configure the inputs and outputs to perform the calculation
 		case (_aluSelect)
-			NOT:  begin out <= ~A; finished <= 1; end
+			NOT:  begin out <= ~B; finished <= 1; end
 			AND:  begin out <= A&B; finished <= 1; end
 			OR : begin out <= A|B; finished <= 1; end
 			ADD, SUB, NEG: begin
@@ -102,7 +102,7 @@ always @(clock, adder_out, mul_finished, div_finished) begin
 				subtract <= _aluSelect[0];
 				// Mux in adjusted values if negate bit is high
 				adder_mux_A <= _aluSelect[1] ? 0 : A;
-				adder_mux_B <= _aluSelect[1] ? A : B;
+				adder_mux_B <= _aluSelect[1] ? B : B;
 			end
 			// Delay slightly to let the algo start
 			MUL: begin mul_start <= 1; #1; end

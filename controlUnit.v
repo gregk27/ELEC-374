@@ -279,6 +279,7 @@ begin
 	// not and negate instructions
 	
 	alu_n0: begin // send Rb straight into the alu along with the instruction
+		// Unary operators don't use RY, instead read straight off datapath to save the clock cycle
 		Grb <= 1; Rout <= 1; RZin <= 1; ALUControl <= IR[31:27]; start <= 1;	
 	end
 	alu_n1: begin // store the result in Ra
