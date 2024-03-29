@@ -198,7 +198,7 @@ begin
 	end 
 	
 	ld1: begin // add the immediate 
-		Immout <= 1; ALUControl <= 5'b00100; RZin <= 1; start <= 1;
+		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; start <= 1;
 	end
 	ld2: begin // search for sum in memory  
       RZLOout <= 1; MARin <= 1;
@@ -215,7 +215,7 @@ begin
 		Rout <= 1; Grb <= 1; BAout <= 1; RYin <= 1;
 	end 
 	ldi1: begin
-		Immout <= 1; ALUControl <= 5'b00100; RZin <= 1; start <= 1;
+		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; start <= 1;
 	end
 	ldi2: begin
       RZLOout <= 1; Gra <= 1; Rin <= 1;
@@ -226,7 +226,7 @@ begin
       Rout <= 1; Grb <= 1; BAout <= 1; RYin <= 1;
 	end
 	st1: begin
-		Immout <= 1; ALUControl <= 5'b00100; RZin <= 1; start <= 1;
+		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; start <= 1;
 	end
 	st2: begin
       RZLOout <= 1; MARin <= 1;
@@ -293,7 +293,7 @@ begin
 		PCout <= 1; RYin <= 1;
 	end 
 	br2: begin 
-		Immout <= 1; ALUControl <= 5'b00100; RZin <= 1; start <= 1;
+		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; start <= 1;
 	end
 	br3: begin
 		if(branch) begin 

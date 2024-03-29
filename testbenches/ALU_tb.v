@@ -3,22 +3,21 @@ module ALU_tb();
 
 // Operation selects from alu
 parameter
-	NOT	= 5'b00001,
-	AND	= 5'b00010,
-	OR 	= 5'b00011,
+	NOT	= 5'b10010,
+	AND	= 5'b01010,
+	OR 	= 5'b01011,
 	// LSB used as sub flag, 2nd bit used as negate flag
-	ADD	= 5'b00100,
-	SUB	= 5'b00101,
-	NEG	= 5'b00111,
-	MUL	= 5'b01000,
-	DIV 	= 5'b01001,
+	ADD	= 5'b00011,
+	SUB	= 5'b00100,
+	NEG	= 5'b10001,
+	MUL	= 5'b01111,
+	DIV 	= 5'b10000,
 	//  Shifts are encoded as 1 1 Arith Rot Right
-	SHL 	= 5'b11000,
-	SHR 	= 5'b11001,
-	ROL 	= 5'b11010,
-	ROR 	= 5'b11011,
-	SHLA 	= 5'b11100,
-	SHRA 	= 5'b11101;
+	SHL 	= 5'b00111,
+	SHR 	= 5'b00101,
+	ROL 	= 5'b01001,
+	ROR 	= 5'b01000,
+	SHRA 	= 5'b00110;
 
 
 reg clock;
