@@ -2,6 +2,7 @@ module controlUnit (
 	input wire clock, reset, stop, 
 	input wire [31:0]IR,
 	input wire branch,
+	input wire ALUFinished,
 	output reg [4:0]ALUControl, // send opcodes to configure the alu operations
 	output reg start,
 	
@@ -37,7 +38,7 @@ alu_2_reg0 = 8'h11, alu_2_reg1 = 8'h12, alu_2_reg2 = 8'h13,
 alu_imm0 = 8'h14, alu_imm1 = 8'h15, alu_imm2 = 8'h16,
 
 // alu for multiplying or dividing
-alu_mul_div0 = 8'h17, alu_mul_div1 = 8'h18, alu_mul_div2 = 8'h19, alu_mul_div3 = 8'h1A,
+alu_mul_div0 = 8'h17, alu_mul_div1 = 8'h18, alu_mul_div2 = 8'h19, alu_mul_div3 = 8'h1A, alu_mul_div_wait = 8'h2F,
 
 // alu for negation and not ops
 alu_n0 = 8'h1B, alu_n1 = 8'h1C,
@@ -64,6 +65,9 @@ mflo0 = 8'h27,
 nop0 = 8'h28, nop1 = 8'h29, nop2 = 8'h2A, nop3 = 8'h2B, nop4 = 8'h2C,
 
 halt = 8'h2D;
+
+// Inst_fetch3 = 8'h2E above
+// alu_mul_div_wait = 8'h2F above
 
 reg [7:0]present_state = reset_state;
 
@@ -129,7 +133,8 @@ begin
 				alu_imm2: present_state = Inst_fetch0;	//reached the end of the immediate alu instruction get the next
 				
 				alu_mul_div0: present_state = alu_mul_div1;
-				alu_mul_div1: present_state = alu_mul_div2;
+				alu_mul_div1: present_state = alu_mul_div_wait;
+				alu_mul_div_wait: present_state = ALUFinished ? alu_mul_div2 : alu_mul_div_wait; // Hold in the waiting state until the ALU is done
 				alu_mul_div2: present_state = alu_mul_div3;
 				alu_mul_div3: present_state = Inst_fetch0;	//reached the end of the mul or div alu instruction get the next
 				
@@ -277,13 +282,16 @@ begin
 		Grb <= 1; Rout <= 1; RYin <= 1; 
 	end
 	alu_mul_div1: begin // put Ra into the ALU
-		Gra <= 1; Rout <= 1; RZin <= 1; ALUControl <= IR[31:27]; start <= 1;		
+		Gra <= 1; Rout <= 1; ALUControl <= IR[31:27]; start <= 1;		
+	end
+	alu_mul_div_wait: begin // Ilde state to wait for the calculation to finish
+		RZin <= 1;
 	end
 	alu_mul_div2: begin // move the upper 32 bits into the hi reg
-		RZHIout <= 1; RHIout <= 1;
+		RZHIout <= 1; RHIin <= 1;
 	end
 	alu_mul_div3: begin // move the lower 32 bits into the lo reg
-		RZLOout <= 1; RLOout <= 1;
+		RZLOout <= 1; RLOin <= 1;
 	end
 	
 	// not and negate instructions

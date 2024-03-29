@@ -34,6 +34,7 @@ controlUnit control(
     clock, reset, stop,
     BusMuxInIR,
 	 branch,
+	finished,
     opSelect,
     start,
     read, write, clear,
