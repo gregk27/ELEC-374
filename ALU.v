@@ -141,6 +141,7 @@ always @(clock, adder_out, mul_finished, div_finished) begin
 			end
 			SHL, SHR, ROL, ROR, SHRA, SHLA: begin
 				// Shifter runs in 1 cycle, so always ready
+				#1 // Slight delay for race condition
 				out <= shift_out;
 				finished <= 1;
 			end
