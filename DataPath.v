@@ -4,7 +4,10 @@ module DataPath(
   	output wire finished,
 	
 	// Memory Controls
-	output wire memFinished 
+	output wire memFinished,
+
+	// Counter of instructions executed for debugging
+	output wire [15:0]instrCount
 );
 
 // Connections from device output to bus input
@@ -37,7 +40,8 @@ controlUnit control(
     IncPC, 
     Gra, Grb, Grc, Rin, Rout, BAout, conffin,
     RLOout, RHIout, RZLOout, RZHIout, PCout, MDRout, Immout, Inportout, 
-    RLOin, RHIin, PCin, IRin, RYin, RZin, MDRin, MARin, OutportIn
+    RLOin, RHIin, PCin, IRin, RYin, RZin, MDRin, MARin, OutportIn,
+	instrCount
 );
 
 //Devices

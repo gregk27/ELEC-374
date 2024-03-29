@@ -10,8 +10,10 @@ module controlUnit (
 	output reg incPC,
 	output reg Gra, Grb, Grc, Rin, Rout, BAout, Conffin, // for instruction operations 
 	output reg RLOout, RHIout, RZLOout, RZHIout, PCout, MDRout, Immout, InPortout,
-	output reg RLOin, RHIin, PCin, IRin, RYin, RZin, MDRin, MARin, OutPortin 
+	output reg RLOin, RHIin, PCin, IRin, RYin, RZin, MDRin, MARin, OutPortin,
 	
+	// Instruction counter for debugging
+	output reg [15:0]instrCount
 	// for the register file
 //	output reg RFin, RFout, 
 //	output reg [3:0]RFSelect
@@ -64,6 +66,12 @@ nop0 = 8'h28, nop1 = 8'h29, nop2 = 8'h2A, nop3 = 8'h2B, nop4 = 8'h2C,
 halt = 8'h2D;
 
 reg [7:0]present_state = reset_state;
+
+// Default ALU value
+initial ALUControl <= 0;
+
+// Initialize the instruction counter to 0
+initial instrCount <= -1;
 
 //set up state transitions, flow through each instruction a based on the first five bits in the IR
 
@@ -165,8 +173,8 @@ begin
 	RLOout <= 0; RHIout <= 0; RZLOout <= 0; RZHIout <=0 ; PCout <= 0; MDRout <= 0; Immout <= 0; InPortout <= 0;
 	RLOin <= 0; RHIin <= 0; PCin <= 0; IRin <= 0; RYin <= 0; RZin <= 0; MDRin <= 0; MARin <= 0; OutPortin <= 0;
 	
-	
-	ALUControl <= 5'b00000;
+	// Latch ALU Control so the results are preserved until a new op is requested
+	ALUControl <= ALUControl;
 	start <= 0;
 	// branch <= 0; do not reassert branch at every state only set it to 0 on reset might need to update this 
 	
@@ -185,6 +193,8 @@ begin
 		
 	Inst_fetch1: begin
 			MDRin <= 1; read <= 1; 
+			// Increment the instruction counter, done here as it looks better in the waveform
+			instrCount = instrCount + 1;
 		end
 		
 	Inst_fetch2: begin

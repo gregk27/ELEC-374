@@ -6,6 +6,7 @@ set tbName phase3_tb
 
 delete wave *
 
+add wave -dec sim:/$tbName/instrCount
 add wave sim:/$tbName/clock
 add wave -hex sim:/$tbName/DP/PC/q
 add wave -hex sim:/$tbName/DP/IR/q
@@ -37,7 +38,7 @@ foreach addr $addrs {
 
 restart -f
 # Run for 10 cycles
-run 1400 ns
+run 3000 ns
 
 configure wave -namecolwidth 250
 wave zoom full
