@@ -17,7 +17,7 @@ when "sim:/$tbName/instrCount(15:0) == 'd$end" {
 }
 
 # Run for 10 cycles
-run 5000 ns
+run 8000 ns
 
 wave zoomrange [expr $startTime - 15000] [expr $endTime + 15000]
 wave cursor delete

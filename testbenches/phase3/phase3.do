@@ -38,8 +38,8 @@ foreach addr $addrs {
 }
 
 restart -f
-# Run for 10 cycles
-run 3000 ns
+# Run to completion
+run 8000 ns
 
 configure wave -namecolwidth 250
 wave zoom full
