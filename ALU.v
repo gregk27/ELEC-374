@@ -81,10 +81,9 @@ always @(opcode) begin
 endcase
 end
 
-// Run on negedge clock to have values ready by the positive edge
-always @(clock) begin
+always @(start) begin
 	// If start is asserted, clear finished flag and begin setup this cycle
-	if(start && !clock) begin
+	if(start) begin
 		bCache <= B;
 		// First run setup to configure the inputs and outputs to perform the calculation
 		case (_aluSelect)
