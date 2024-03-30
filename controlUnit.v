@@ -13,11 +13,12 @@ module controlUnit (
 	output reg RLOout, RHIout, RZLOout, RZHIout, PCout, MDRout, Immout, InPortout,
 	output reg RLOin, RHIin, PCin, IRin, RYin, RZin, MDRin, MARin, OutPortin,
 	
+	// for the register file
+	inout RFin, RFout, 
+	inout [3:0]RFSelect,
+	
 	// Instruction counter for debugging
 	output reg [15:0]instrCount
-	// for the register file
-//	output reg RFin, RFout, 
-//	output reg [3:0]RFSelect
 );
 
 parameter reset_state = 8'h00, 
@@ -76,6 +77,14 @@ initial ALUControl <= 0;
 
 // Initialize the instruction counter to 0
 initial instrCount <= -1;
+
+// TSB Register controls need continous assignment, which wraps internal vars
+reg _RFin, _RFout;
+reg [3:0]_RFSelect;
+
+assign RFin = _RFin;
+assign RFout = _RFout;
+assign RFSelect = _RFSelect;
 
 //set up state transitions, flow through each instruction a based on the first five bits in the IR
 
@@ -182,7 +191,10 @@ begin
 	ALUControl <= ALUControl;
 	start <= 0;
 	// branch <= 0; do not reassert branch at every state only set it to 0 on reset might need to update this 
-	
+
+	// Set register controls to high impedance when not asserted
+	_RFin <= 'hz; _RFout <= 'hz;
+	_RFSelect <= 'hz;
 	
 	case(present_state) 
 	
@@ -327,12 +339,12 @@ begin
 	end
 	
 	// jump and link instruction
-//	jal0: begin // store PC in R15
-//		PCout <= 1; RFSelect <= 15; RFin <= 1; 
-//	end
-//	jal1: begin // ld Ra into PC
-//		PCin <= 1; Gra <= 1; Rout <= 1; 
-//	end
+	jal0: begin // store PC in R15
+		PCout <= 1; _RFSelect <= 15; _RFin <= 1; 
+	end
+	jal1: begin // ld Ra into PC
+		PCin <= 1; Gra <= 1; Rout <= 1; 
+	end
 	
 	// io port instructions
 	inputPort0: begin

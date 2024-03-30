@@ -42,6 +42,7 @@ controlUnit control(
     Gra, Grb, Grc, Rin, Rout, BAout, conffin,
     RLOout, RHIout, RZLOout, RZHIout, PCout, MDRout, Immout, Inportout, 
     RLOin, RHIin, PCin, IRin, RYin, RZin, MDRin, MARin, OutportIn,
+	RFin, RFout, RFselect,
 	instrCount
 );
 
@@ -50,8 +51,7 @@ controlUnit control(
 
 // Registers
 // Internal selection is testbench override if positive, otherwise generated from opcode
-wire [3:0]_rfSelect = RFselect[3:0];
-RegFile RF(clock, clear, RFin | RFin_TB, BAout, _rfSelect, BusMuxOut, BusMuxInRF);
+RegFile RF(clock, clear, RFin, BAout, RFselect, BusMuxOut, BusMuxInRF);
 Select SE(BusMuxInIR, BAout, Gra, Grb, Grc, Rout, Rin, BusMuxInImm, RFin, RFout, RFselect);
 
 // Control
@@ -87,7 +87,7 @@ Bus bus(
 	// Data In
 	BusMuxInTB, BusMuxInRF, BusMuxInPC, BusMuxInIR, BusMuxInRY, BusMuxInRZ, BusMuxInMAR, BusMuxInRHI, BusMuxInRLO, BusMuxInMDR, BusMuxInImm, BusMuxInInport,
 	// Select signals
-	TBout, RFout | RFout_TB, PCout, IRout, RYout, RZLOout | RZHIout, MARout, RHIout, RLOout, MDRout, Immout, Inportout,
+	TBout, RFout, PCout, IRout, RYout, RZLOout | RZHIout, MARout, RHIout, RLOout, MDRout, Immout, Inportout,
 	// Out	
 	BusMuxOut);
 
