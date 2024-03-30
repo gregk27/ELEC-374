@@ -95,7 +95,6 @@ Bus bus(
 
 // instance of the alu
 ALU alu(
-	clock,
 	opSelect,
 	BusMuxInRY,	// A
 	BusMuxOut,	//B

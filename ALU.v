@@ -1,5 +1,6 @@
+// Timescale for internal clock
+`timescale 1ns/10ps
 module ALU(
-	input wire clock,
 	input wire [4:0] opcode,
 	input wire [31:0] A,
 	input wire [31:0] B,
@@ -36,13 +37,15 @@ wire [31:0] adder_out;
 reg [31:0] adder_mux_A, adder_mux_B;
 adder add(adder_mux_A, adder_mux_B, subtract, adder_out);
 
-
 reg shift_right;
 reg shift_rotation;
 reg shift_arithmetic;
 wire [31:0] shift_out;
 shifter shift(A, bCache[7:0], shift_right, shift_rotation, shift_arithmetic, shift_out);
 
+// Dedicated clock for multiplier/divider
+reg clock = 0;
+always #1 clock = ~clock;
 
 reg mul_start;
 wire mul_finished;
