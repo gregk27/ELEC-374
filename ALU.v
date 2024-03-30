@@ -81,10 +81,11 @@ always @(opcode) begin
 endcase
 end
 
-always @(start) begin
+always @(start, internal_out, adder_out, mul_finished, div_finished, shift_out) begin
 	// If start is asserted, clear finished flag and begin setup this cycle
 	if(start) begin
 		bCache <= B;
+		finished <= 0;
 		// First run setup to configure the inputs and outputs to perform the calculation
 		case (_aluSelect)
 			NOT:  begin internal_out <= ~B;  end
@@ -111,15 +112,6 @@ always @(start) begin
 	end
 	// Turn off the mul/div start signals when the input signal has changed
 	if (!start) begin
-		mul_start <= 0;
-		div_start <= 0;
-	end
-end
-
-always @(start, internal_out, adder_out, mul_finished, div_finished, shift_out) begin
-	if (start) begin
-		finished <= 0;
-	end else begin
 		// Once setup is complete, monitor outputs for completion (if applicable)
 		case (_aluSelect)
 			NOT, AND, OR: begin
