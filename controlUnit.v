@@ -72,6 +72,9 @@ halt = 8'h2D;
 
 reg [7:0]present_state = reset_state;
 
+// Internal signal used to emit a start signal pulse
+reg _pulseStart = 0;
+
 // Default ALU value
 initial ALUControl <= 0;
 
@@ -189,7 +192,7 @@ begin
 	
 	// Latch ALU Control so the results are preserved until a new op is requested
 	ALUControl <= ALUControl;
-	start <= 0;
+	_pulseStart <= 0;
 	// branch <= 0; do not reassert branch at every state only set it to 0 on reset might need to update this 
 
 	// Set register controls to high impedance when not asserted
@@ -225,7 +228,7 @@ begin
 	end 
 	
 	ld1: begin // add the immediate 
-		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; start <= 1;
+		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; _pulseStart <= 1;
 	end
 	ld2: begin // search for sum in memory  
       RZLOout <= 1; MARin <= 1;
@@ -242,7 +245,7 @@ begin
 		Rout <= 1; Grb <= 1; BAout <= 1; RYin <= 1;
 	end 
 	ldi1: begin
-		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; start <= 1;
+		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; _pulseStart <= 1;
 	end
 	ldi2: begin
       RZLOout <= 1; Gra <= 1; Rin <= 1;
@@ -253,7 +256,7 @@ begin
       Rout <= 1; Grb <= 1; BAout <= 1; RYin <= 1;
 	end
 	st1: begin
-		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; start <= 1;
+		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; _pulseStart <= 1;
 	end
 	st2: begin
       RZLOout <= 1; MARin <= 1;
@@ -270,7 +273,7 @@ begin
 		Grb <= 1; Rout <= 1; RYin <= 1; 
 	end
 	alu_2_reg1: begin // Rc into the ALU
-		Grc <= 1; Rout <= 1; RZin <= 1; ALUControl <= IR[31:27]; start <= 1;
+		Grc <= 1; Rout <= 1; RZin <= 1; ALUControl <= IR[31:27]; _pulseStart <= 1;
 	end
 	alu_2_reg2: begin // store result in Ra
 		RZLOout <= 1; Gra <= 1; Rin <= 1; 
@@ -282,7 +285,7 @@ begin
 		Grb <= 1; Rout <= 1; RYin <= 1; 
 	end
 	alu_imm1: begin // C into the alu
-		Immout <= 1; RZin <= 1; ALUControl <= IR[31:27]; start <= 1;
+		Immout <= 1; RZin <= 1; ALUControl <= IR[31:27]; _pulseStart <= 1;
 	end
 	alu_imm2: begin // store result in Ra
 		RZLOout <= 1; Gra <= 1; Rin <= 1; 
@@ -294,7 +297,7 @@ begin
 		Gra <= 1; Rout <= 1; RYin <= 1; 
 	end
 	alu_mul_div1: begin // put Rb into the ALU
-		Grb <= 1; Rout <= 1; ALUControl <= IR[31:27]; start <= 1;		
+		Grb <= 1; Rout <= 1; ALUControl <= IR[31:27]; _pulseStart <= 1;		
 	end
 	alu_mul_div_wait: begin // Ilde state to wait for the calculation to finish
 		RZin <= 1;
@@ -310,7 +313,7 @@ begin
 	
 	alu_n0: begin // send Rb straight into the alu along with the instruction
 		// Unary operators don't use RY, instead read straight off datapath to save the clock cycle
-		Grb <= 1; Rout <= 1; RZin <= 1; ALUControl <= IR[31:27]; start <= 1;	
+		Grb <= 1; Rout <= 1; RZin <= 1; ALUControl <= IR[31:27]; _pulseStart <= 1;	
 	end
 	alu_n1: begin // store the result in Ra
 		RZLOout <= 1; Gra <= 1; Rin <= 1;
@@ -324,7 +327,7 @@ begin
 		PCout <= 1; RYin <= 1;
 	end 
 	br2: begin 
-		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; start <= 1;
+		Immout <= 1; ALUControl <= 5'b00011; RZin <= 1; _pulseStart <= 1;
 	end
 	br3: begin
 		if(branch) begin 
@@ -373,6 +376,16 @@ begin
 
 endcase
 end 
+
+// Start singal pulser
+// Since the start signal needs to go low at the falling edge for the ALU to begin most ops, this will handle that
+always begin
+	@(posedge _pulseStart)
+		start <= 1;
+	@(negedge clock)
+		start <= 0;
+end
+
 endmodule 
 		
 	
