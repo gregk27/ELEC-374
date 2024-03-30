@@ -15,9 +15,10 @@ add wave -hex sim:/$tbName/DP/BusMuxOut
 add wave -hex sim:/$tbName/DP/RHI/q
 add wave -hex sim:/$tbName/DP/RLO/q
 
+add wave -unsigned sim:/$tbName/DP/RF/RF_select
 # This is black magic, don't look too closely
 # You can set the registers desired here
-set registers { 0 1 2 3 4 5 6 7 8 9 10 11 12 13 }
+set registers { 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 }
 foreach reg $registers {
     set path sim:/$tbName/DP/RF/registers
     append path {[}
