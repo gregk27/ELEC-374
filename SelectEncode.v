@@ -3,8 +3,8 @@ module Select(
     input   BAout,
     input  Gra, Grb, Grc, Rout, Rin,
     output [31:0] C_sign_extended,
-    output RFin, RFout, 
-	 output [3:0]RFselect
+    inout RFin, RFout, 
+	inout [3:0]RFselect
     );
 reg [3:0] OPCode, Ra, Rb, Rc;
 reg [3:0] decoderinput;
@@ -52,9 +52,10 @@ always @ (*)
         C = IR[18] ? { {13{1'b1}}, IR[18:0] } : { {13{1'b0}}, IR[18:0] };
 
     end
-    assign RFin = |registersIn;
-    assign RFout = |registersOut;
-    assign RFselect = decoderinput;
+    // Register controls are TSB lines, so assert HiZ if no requested signal
+    assign RFin = Rin ? |registersIn : 'hz;
+    assign RFout = Rout ? |registersOut : 'hz;
+    assign RFselect = Gra|Grb|Grc ? decoderinput : 'hz;
     assign C_sign_extended = C;
 endmodule
 

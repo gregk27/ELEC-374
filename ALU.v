@@ -1,9 +1,7 @@
-// Needed to add delay when setting up
-// Will need a better system for phase 4
+// Timescale for internal clock
 `timescale 1ns/10ps
 module ALU(
-	input wire clock,
-	input wire [5:0] opSelect,
+	input wire [4:0] opcode,
 	input wire [31:0] A,
 	input wire [31:0] B,
 	input wire start,
@@ -39,13 +37,15 @@ wire [31:0] adder_out;
 reg [31:0] adder_mux_A, adder_mux_B;
 adder add(adder_mux_A, adder_mux_B, subtract, adder_out);
 
-
 reg shift_right;
 reg shift_rotation;
 reg shift_arithmetic;
 wire [31:0] shift_out;
 shifter shift(A, bCache[7:0], shift_right, shift_rotation, shift_arithmetic, shift_out);
 
+// Dedicated clock for multiplier/divider
+reg clock = 0;
+always #1 clock = ~clock;
 
 reg mul_start;
 wire mul_finished;
@@ -57,45 +57,71 @@ wire div_finished;
 wire [31:0] quotient, remainder;
 divider div(clock, div_start, A, bCache, quotient, remainder, div_finished);
 
-reg canFinish;
+// Output register for internally executed bitwise ops
+reg [31:0]internal_out;
 
-// Run on negedge clock to have values ready by the positive edge
-// NOTE: This breaks the finished signal, for now the ALU is clocked only
-always @(clock, adder_out, mul_finished, div_finished) begin
-	// NOTE: This breaks the finished signal, for now the ALU is clocked only
-	canFinish = 1;
+// Recode the spec opcodes to the ALU select codes which are optimized for bit flags
+reg [4:0]_aluSelect;
+always @(opcode) begin
+	case (opcode)
+		5'b00011: _aluSelect <= ADD;
+		5'b00100: _aluSelect <= SUB;
+		5'b00101: _aluSelect <= SHR;
+		5'b00110: _aluSelect <= SHRA;
+		5'b00111: _aluSelect <= SHL;
+		5'b01000: _aluSelect <= ROR;
+		5'b01001: _aluSelect <= ROL;
+		5'b01010: _aluSelect <= AND;
+		5'b01011: _aluSelect <= OR;
+		5'b01100: _aluSelect <= ADD; // addi
+		5'b01101: _aluSelect <= AND; // andi
+		5'b01110: _aluSelect <= OR;  // ori
+		5'b01111: _aluSelect <= MUL;
+		5'b10000: _aluSelect <= DIV;
+		5'b10001: _aluSelect <= NEG;
+		5'b10010: _aluSelect <= NOT;
+		default:  _aluSelect <= {5{1'dx}};
+endcase
+end
+
+always @(start, internal_out, adder_out, mul_finished, div_finished, shift_out) begin
 	// If start is asserted, clear finished flag and begin setup this cycle
-	if(start && !clock) begin
+	if(start) begin
 		bCache <= B;
-		finished = 0;
+		finished <= 0;
 		// First run setup to configure the inputs and outputs to perform the calculation
-		case (opSelect)
-			NOT:  begin out <= ~A; finished <= 1; end
-			AND:  begin out <= A&B; finished <= 1; end
-			OR : begin out <= A|B; finished <= 1; end
+		case (_aluSelect)
+			NOT:  begin internal_out <= ~B;  end
+			AND:  begin internal_out <= A&B; end
+			OR :  begin internal_out <= A|B; end
 			ADD, SUB, NEG: begin
 				// Subtract based on bit 0
-				subtract <= opSelect[0];
+				subtract <= _aluSelect[0];
 				// Mux in adjusted values if negate bit is high
-				adder_mux_A <= opSelect[1] ? 0 : A;
-				adder_mux_B <= opSelect[1] ? A : B;
+				adder_mux_A <= _aluSelect[1] ? 0 : A;
+				adder_mux_B <= _aluSelect[1] ? B : B;
 			end
-			// Delay slightly to let the algo start
-			MUL: begin mul_start <= 1; #1; end
-			DIV: begin div_start <= 1; #1; end
+			MUL: begin mul_start <= 1; end
+			DIV: begin div_start <= 1; end
 			SHL, SHR, ROL, ROR, SHRA, SHLA: begin
 				// Right flat in bit 0
-				shift_right <= opSelect[0];
+				shift_right <= _aluSelect[0];
 				// Rotate flag in bit 1
-				shift_rotation <= opSelect[1];
+				shift_rotation <= _aluSelect[1];
 				// Arithmetic flag in bit 2
-				shift_arithmetic <= opSelect[2];
+				shift_arithmetic <= _aluSelect[2];
 			end
 		endcase
 	end
-	if (canFinish) begin
+	// Turn off the mul/div start signals when the input signal has changed
+	if (!start) begin
 		// Once setup is complete, monitor outputs for completion (if applicable)
-		case (opSelect)
+		case (_aluSelect)
+			NOT, AND, OR: begin
+				// Bitwise run in 1 cycle, so always ready
+				out <= internal_out;
+				finished <= 1;
+			end
 			ADD, SUB, NEG: begin
 				// Adder runs in 1 cycle, so always ready
 				out <= adder_out;
