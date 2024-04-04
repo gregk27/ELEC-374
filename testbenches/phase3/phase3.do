@@ -27,6 +27,9 @@ foreach reg $registers {
     add wave -hex $path
 }
 
+add wave -hex sim:/$tbName/DP/memory/MAR/q
+add wave -bin sim:/$tbName/DP/memory/MDR
+
 # You can set the registers desired here
 set addrs { 71 142 }
 foreach addr $addrs {
