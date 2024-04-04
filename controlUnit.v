@@ -379,10 +379,12 @@ end
 
 // Start singal pulser
 // Since the start signal needs to go low at the falling edge for the ALU to begin most ops, this will handle that
-always begin
-	@(posedge _pulseStart)
+always @(_pulseStart, clock) begin
+	// @(posedge _pulseStart)
+	if(_pulseStart && !start)
 		start <= 1;
-	@(negedge clock)
+	// @(negedge clock)
+	else if(!clock)
 		start <= 0;
 end
 

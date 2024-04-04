@@ -104,7 +104,6 @@ set_global_assignment -name VERILOG_MACRO QUARTUS
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME addi_tb -section_id Phase2
 
 
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name VERILOG_FILE testbenches/phase3/phase3datapath_tb.v
 set_global_assignment -name VERILOG_FILE testbenches/RAM_tb.v
 set_global_assignment -name SOURCE_FILE RAM_empty.ram
@@ -185,3 +184,4 @@ set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id "Phase 3"
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1000 ns" -section_id "Phase 3"
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME phase3_tb -section_id "Phase 3"
 set_global_assignment -name EDA_TEST_BENCH_FILE testbenches/phase3/phase3_tb.v -section_id "Phase 3"
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
