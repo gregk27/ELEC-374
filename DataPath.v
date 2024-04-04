@@ -1,5 +1,6 @@
 module DataPath(
-	input wire clock,reset, stop,
+	input wire clock,reset, stop, device_strobe,
+	input wire[31:0] device_in,
 	// alu requirments
   	output wire finished,
 	
@@ -7,7 +8,8 @@ module DataPath(
 	output wire memFinished,
 
 	// Counter of instructions executed for debugging
-	output wire [15:0]instrCount
+	output wire [15:0]instrCount,
+	output wire[31:0] device_out
 );
 
 // Connections from device output to bus input
