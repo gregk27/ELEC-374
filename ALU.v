@@ -135,14 +135,14 @@ always @(start, internal_out, adder_out, mul_finished, div_finished, shift_out) 
 			end
 			MUL: begin
 				// Pull start flag low so mul can run
-				mul_start <= 0;
+				//mul_start <= 0;
 				// Copy over current values
 				out <= {mul_hi, mul_lo};
 				finished <= mul_finished;
 			end
 			DIV: begin
 				// Pull start flag low so div can run
-				div_start <= 0;
+				//div_start <= 0;
 				// Copy over current values
 				out <= {remainder, quotient};
 				finished <= div_finished;
