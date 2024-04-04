@@ -30,18 +30,25 @@ BusMuxInIR = IR[20:19];
                     if(BusMuxIn != 32'b0)begin
                         temp <= 1;
                     end
+						  else
+                    temp <= 0;
+                  
                     end
                 
                 2'b10:begin
                     if(BusMuxIn[31] == 1'b0)begin
                         temp <= 1;
                     end
+						  else
+                    temp <= 0;
                     end
                 
                 2'b11:begin
                     if(BusMuxIn[31] == 1'b1)begin
                         temp <= 1;
                     end
+						  else
+                    temp <= 0;
                     end
             
         endcase
